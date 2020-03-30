@@ -1,2 +1,1 @@
-# ecem16
-UCLA ECE M16 / CS M51
+# UCLA ECE M16 / CS M51
