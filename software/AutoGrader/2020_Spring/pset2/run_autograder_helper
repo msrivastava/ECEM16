@@ -1,0 +1,65 @@
+#!/bin/bash -f
+
+AGHOME=`pwd`
+HWNAME="pset2"
+
+cd $AGHOME/submission
+
+if [[ -d '__MACOSX' ]]; then
+	rm -rf __MACOSX
+fi
+
+if [ `ls -1 | wc -l` -eq "1" ]
+then
+	cd `ls -1`
+fi
+
+if [ -d "${HWNAME}_files" ]
+then
+	cd ${HWNAME}_files
+fi
+
+if [ -d "$HWNAME" ]
+then
+	cd $HWNAME
+fi
+
+echo "The submission you uploaded contained the files listed below."
+echo "Please use this information to ensure correctness of upload."
+
+for f in `find . -type f | grep -v __MACOSX | grep -v DS_Store | grep -v Icon`
+do
+  wc -c $f
+done
+
+echo ""
+
+# check required files
+FILES="pset2_prob1.fzm pset2_prob2.fzm pset2_prob3.fzm pset2_prob4.fzm"
+
+
+for f in $FILES
+do
+	rm -f $AGHOME/source/$f
+	if test -f "$f"; then
+		echo "Required file $f exists: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+		cp $f $AGHOME/source/$f
+	else
+		echo "Required file $f not found."
+	fi
+done
+
+cd $AGHOME/source
+
+cat results_default.json > $AGHOME/results/results.json
+exit 0
+
+
+rm -f gen_results.py
+wget -q -O gen_results.py https://www.dropbox.com/s/p8tp3t4p2brtcg2/gen_results.py?raw=1
+grep EEM16 gen_results.py > /dev/null
+
+if [ $? -ne 0 ]
+then cat results_error.json > /autograder/results/results.json
+else python gen_results.py > /autograder/results/results.json
+fi

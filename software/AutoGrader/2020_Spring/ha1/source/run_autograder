@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if test -f /etc/profile.d/jdk14.sh; then
+source /etc/profile.d/jdk14.sh
+fi
+
+AGHOME=`pwd`
+
+cd "$AGHOME"/source
+
+wget -q -O run_autograder_helper https://www.dropbox.com/s/4ocfq74fsml57od/run_autograder_helper?raw=1
+
+chmod +x run_autograder_helper
+
+cd "$AGHOME"
+
+"$AGHOME"/source/run_autograder_helper

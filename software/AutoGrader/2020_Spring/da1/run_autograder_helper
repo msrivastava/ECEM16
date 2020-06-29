@@ -1,0 +1,135 @@
+#!/bin/bash -f
+
+AGHOME="/autograder"
+HWNAME="da1"
+TESTING=
+
+# JSON query
+echo "Installing jq"
+wget -q https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+mv jq-linux64 /usr/local/bin/jq
+chmod +x /usr/local/bin/jq
+
+source /etc/profile.d/jdk14.sh
+
+cd "$AGHOME"/submission
+
+if [[ -d '__MACOSX' ]]; then
+	rm -rf __MACOSX
+fi
+
+if [ `ls -1 | wc -l` -eq "1" ]
+then
+	cd `ls -1`
+fi
+
+if [ -d "${HWNAME}_files" ]
+then
+	cd ${HWNAME}_files
+fi
+
+if [ -d "$HWNAME" ]
+then
+	cd $HWNAME
+fi
+
+echo "The submission you uploaded contained the files listed below."
+echo "Please use this information to ensure correctness of upload."
+
+for f in `find . -type f | grep -v __MACOSX | grep -v DS_Store | grep -v Icon`
+do
+  wc -c $f
+done
+
+echo ""
+
+# check required files
+FILES="da1_task1.circ da1_task2.circ da1_task3.circ da1_task4.circ da1_task5.circ"
+
+for f in $FILES
+do
+	rm -f "$AGHOME"/source/$f
+	if test -f "$f"; then
+		echo "Required file $f exists: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+		cp $f "$AGHOME"/source/$f
+	else
+		echo "Required file $f not found."
+	fi
+done
+
+cd "$AGHOME"/source
+
+if [ $TESTING ]
+then
+	if [ -f "$AGHOME"/submission_metadata.json ]
+	then
+		NAME=`jq .users\[0\].name "$AGHOME"/submission_metadata.json`
+		EMAIL=`jq .users\[0\].email "$AGHOME"/submission_metadata.json`
+		ASSIGNMENT=`jq -c .assignment.title "$AGHOME"/submission_metadata.json`
+		echo Welcome "$NAME" to autograder for "$ASSIGNMENT"
+		if [ "$EMAIL" != '"mbs@ee.ucla.edu"' ]
+		then
+			echo "Autograder is running in testing mode, and so exiting."
+			cat results_default.json > "$AGHOME"/results/results.json
+			exit 0
+		else
+			echo "Autograder is running in testing mode, but still proceeding because of special user."
+		fi
+	else
+		echo "Autograder is running in testing mode, but still proceeding because of local execution."
+	fi
+else
+	echo "Autograder is running in demployment mode!"
+fi
+
+echo "Autograder is in deployment mode"
+
+
+OldLogisimUsersEmailList='"atyw99@gmail.com" "17colinmiperry@gmail.com" "enikabiswas@gmail.com"'
+CurrentUserEmail=`jq .users\[0\].email "$AGHOME"/submission_metadata.json`
+CurrentUserName=`jq .users\[0\].name "$AGHOME"/submission_metadata.json`
+
+echo ""
+
+if [[ "$OldLogisimUsersEmailList" =~ (^|[[:space:]])"$CurrentUserEmail"($|[[:space:]]) ]]
+then
+	echo User "$CurrentUserName" did not follow instructions and needs old Logisim.
+	echo ""
+	wget -q -O logisim-generic-2.7.1.jar https://www.dropbox.com/s/23ptrmb7amdzy17/logisim-generic-2.7.1.jar?raw=1
+	LOGISIM=logisim-generic-2.7.1.jar
+	GENRESULTSURL="https://www.dropbox.com/s/b6ts3aor960p0t5/gen_results_oldlogisim.py?raw1"
+else
+	echo User "$CurrentUserName" is using the correct version of Logisim.
+	echo ""
+	LOGISIM=logisim-evolution-2.14.8.4-cornell.jar
+	GENRESULTSURL="https://www.dropbox.com/s/372lgyqaykl56kf/gen_results.py?raw=1"
+fi
+
+for f in $FILES
+do
+#	java -jar logisim-evolution-2.14.8.4-cornell.jar $f -tty table 2>/dev/null | grep -v '1$' | cut -f 1-5 > da1_2_tb.out
+	if test -f "$f"; then
+		rm -f ${f%.*}.out
+		echo "Running logisim on ${f%.*}_tb.circ..."
+		java -jar "$LOGISIM" ${f%.*}_tb.circ -tty table 2>/dev/null 1> ${f%.*}.out
+		#cat ${f%.*}.out
+	else
+		echo "File $f not available."
+	fi
+done
+
+echo ""
+echo "Downloading grading program [gen_results.py]."
+rm -f gen_results.py
+wget -q -O gen_results.py "$GENRESULTSURL"
+
+grep EEM16 gen_results.py > /dev/null
+
+if [ $? -ne 0 ]
+then 
+	echo "Error: problem in downloading gen_results.py."
+	cat results_error.json > "$AGHOME"/results/results.json
+else 
+	echo "Running grading program [gen_results.py]."
+	AGHOME="$AGHOME" python3 gen_results.py
+fi

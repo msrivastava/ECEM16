@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project source="2.14.8.4" version="1.0">
+  This file is intended to be loaded by Logisim-evolution (https://github.com/cs3410/logisim-evolution).
+
+  <lib desc="#Wiring" name="0">
+    <tool name="Splitter">
+      <a name="facing" val="south"/>
+    </tool>
+    <tool name="Pin">
+      <a name="width" val="4"/>
+    </tool>
+    <tool name="Tunnel">
+      <a name="facing" val="east"/>
+    </tool>
+    <tool name="Constant">
+      <a name="width" val="4"/>
+      <a name="value" val="0xe"/>
+    </tool>
+  </lib>
+  <lib desc="#Gates" name="1"/>
+  <lib desc="#Plexers" name="2">
+    <tool name="Multiplexer">
+      <a name="width" val="4"/>
+      <a name="enable" val="false"/>
+    </tool>
+    <tool name="Demultiplexer">
+      <a name="enable" val="false"/>
+    </tool>
+    <tool name="BitSelector">
+      <a name="width" val="16"/>
+    </tool>
+  </lib>
+  <lib desc="#Arithmetic" name="3"/>
+  <lib desc="#Memory" name="4">
+    <tool name="ROM">
+      <a name="contents">addr/data: 8 8
+0
+</a>
+    </tool>
+  </lib>
+  <lib desc="#I/O" name="5"/>
+  <lib desc="#HDL-IP" name="6">
+    <tool name="VHDL Entity">
+      <a name="content">--------------------------------------------------------------------------------
+-- HEIG-VD, institute REDS, 1400 Yverdon-les-Bains
+-- Project :
+-- File    :
+-- Autor   :
+-- Date    :
+--
+--------------------------------------------------------------------------------
+-- Description :
+--
+--------------------------------------------------------------------------------
+
+library ieee;
+  use ieee.std_logic_1164.all;
+  --use ieee.numeric_std.all;
+
+entity VHDL_Component is
+  port(
+  ------------------------------------------------------------------------------
+  --Insert input ports below
+    horloge_i  : in  std_logic;                    -- input bit example
+    val_i      : in  std_logic_vector(3 downto 0); -- input vector example
+  ------------------------------------------------------------------------------
+  --Insert output ports below
+    max_o      : out std_logic;                    -- output bit example
+    cpt_o      : out std_logic_Vector(3 downto 0)  -- output vector example
+    );
+end VHDL_Component;
+
+--------------------------------------------------------------------------------
+--Complete your VHDL description below
+architecture type_architecture of VHDL_Component is
+
+
+begin
+
+
+end type_architecture;
+</a>
+    </tool>
+  </lib>
+  <lib desc="#TCL" name="7">
+    <tool name="TclGeneric">
+      <a name="content">library ieee;
+use ieee.std_logic_1164.all;
+
+entity TCL_Generic is
+  port(
+    --Insert input ports below
+    horloge_i  : in  std_logic;                    -- input bit example
+    val_i      : in  std_logic_vector(3 downto 0); -- input vector example
+
+	  --Insert output ports below
+    max_o      : out std_logic;                    -- output bit example
+    cpt_o      : out std_logic_Vector(3 downto 0)  -- output vector example
+  );
+end TCL_Generic;
+</a>
+    </tool>
+  </lib>
+  <lib desc="#Base" name="8">
+    <tool name="Text Tool">
+      <a name="text" val=""/>
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="halign" val="center"/>
+      <a name="valign" val="base"/>
+    </tool>
+    <tool name="Text">
+      <a name="text" val="Test"/>
+    </tool>
+  </lib>
+  <lib desc="#BFH-Praktika" name="9"/>
+  <lib desc="#CS3410-Components" name="10">
+    <tool name="RISC-VProgramROM">
+      <a name="contents" val=""/>
+    </tool>
+  </lib>
+  <lib desc="file#M16 Components.circ" name="11"/>
+  <main name="FSM_2PHS"/>
+  <options>
+    <a name="gateUndefined" val="ignore"/>
+    <a name="simlimit" val="1000"/>
+    <a name="simrand" val="0"/>
+    <a name="tickmain" val="half_period"/>
+  </options>
+  <mappings>
+    <tool lib="8" map="Button2" name="Menu Tool"/>
+    <tool lib="8" map="Button3" name="Menu Tool"/>
+    <tool lib="8" map="Ctrl Button1" name="Menu Tool"/>
+  </mappings>
+  <toolbar>
+    <tool lib="8" name="Poke Tool"/>
+    <tool lib="8" name="Edit Tool"/>
+    <tool lib="8" name="Text Tool">
+      <a name="text" val=""/>
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="halign" val="center"/>
+      <a name="valign" val="base"/>
+    </tool>
+    <sep/>
+    <tool lib="0" name="Pin"/>
+    <tool lib="0" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="labelloc" val="east"/>
+    </tool>
+    <tool lib="1" name="NOT Gate"/>
+    <tool lib="1" name="AND Gate"/>
+    <tool lib="1" name="OR Gate"/>
+  </toolbar>
+  <circuit name="FSM_2PHS">
+    <a name="circuit" val="FSM_2PHS"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="north"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <wire from="(160,80)" to="(170,80)"/>
+    <wire from="(160,110)" to="(170,110)"/>
+    <wire from="(160,140)" to="(170,140)"/>
+    <wire from="(160,170)" to="(170,170)"/>
+    <wire from="(600,140)" to="(610,140)"/>
+    <wire from="(600,170)" to="(610,170)"/>
+    <comp lib="0" loc="(610,140)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="label" val="ACK"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="0" loc="(610,170)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="label" val="GO"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="0" loc="(160,80)" name="Pin">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="0" loc="(160,140)" name="Pin">
+      <a name="label" val="REQ"/>
+    </comp>
+    <comp lib="0" loc="(160,170)" name="Pin">
+      <a name="label" val="DONE"/>
+    </comp>
+    <comp lib="0" loc="(160,110)" name="Pin">
+      <a name="label" val="RST"/>
+    </comp>
+    <comp lib="8" loc="(391,60)" name="Text">
+      <a name="text" val="Do not move/delete/add/rename pins"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(389,42)" name="Text">
+      <a name="text" val="Two Phase Handshake FSM from Part 1"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(391,24)" name="Text">
+      <a name="text" val="You Need to Edit This"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+  </circuit>
+  <circuit name="TB_FSM_2PHS">
+    <a name="circuit" val="TB_FSM_2PHS"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <wire from="(140,250)" to="(460,250)"/>
+    <wire from="(410,310)" to="(600,310)"/>
+    <wire from="(180,140)" to="(180,210)"/>
+    <wire from="(850,380)" to="(850,390)"/>
+    <wire from="(410,270)" to="(460,270)"/>
+    <wire from="(570,410)" to="(760,410)"/>
+    <wire from="(380,230)" to="(430,230)"/>
+    <wire from="(440,420)" to="(440,430)"/>
+    <wire from="(440,410)" to="(440,420)"/>
+    <wire from="(440,340)" to="(610,340)"/>
+    <wire from="(570,230)" to="(610,230)"/>
+    <wire from="(570,210)" to="(610,210)"/>
+    <wire from="(760,380)" to="(760,410)"/>
+    <wire from="(210,420)" to="(440,420)"/>
+    <wire from="(140,140)" to="(180,140)"/>
+    <wire from="(380,140)" to="(380,230)"/>
+    <wire from="(570,390)" to="(850,390)"/>
+    <wire from="(610,170)" to="(610,210)"/>
+    <wire from="(430,230)" to="(460,230)"/>
+    <wire from="(390,210)" to="(390,370)"/>
+    <wire from="(610,230)" to="(610,340)"/>
+    <wire from="(440,390)" to="(460,390)"/>
+    <wire from="(440,410)" to="(460,410)"/>
+    <wire from="(440,430)" to="(460,430)"/>
+    <wire from="(570,370)" to="(600,370)"/>
+    <wire from="(180,210)" to="(390,210)"/>
+    <wire from="(410,270)" to="(410,310)"/>
+    <wire from="(370,140)" to="(380,140)"/>
+    <wire from="(440,340)" to="(440,390)"/>
+    <wire from="(600,310)" to="(600,370)"/>
+    <wire from="(430,170)" to="(430,230)"/>
+    <wire from="(390,370)" to="(460,370)"/>
+    <wire from="(390,210)" to="(460,210)"/>
+    <comp lib="0" loc="(140,140)" name="Clock">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="0" loc="(140,110)" name="Clock">
+      <a name="label" val="sysclk"/>
+    </comp>
+    <comp lib="11" loc="(570,370)" name="RndDlyMul"/>
+    <comp loc="(570,210)" name="FSM_2PHS">
+      <a name="label" val="DUT"/>
+    </comp>
+    <comp lib="0" loc="(760,380)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="width" val="32"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="0" loc="(850,380)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="width" val="32"/>
+      <a name="label" val="X_SQUARE"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="5" loc="(430,170)" name="LED">
+      <a name="facing" val="south"/>
+      <a name="label" val="REQis1"/>
+    </comp>
+    <comp lib="5" loc="(610,170)" name="LED">
+      <a name="facing" val="south"/>
+      <a name="label" val="ACKis1"/>
+    </comp>
+    <comp lib="11" loc="(370,140)" name="poweron_reset_random"/>
+    <comp lib="0" loc="(140,250)" name="Pin">
+      <a name="label" val="REQ"/>
+    </comp>
+    <comp lib="0" loc="(210,420)" name="Pin">
+      <a name="width" val="32"/>
+      <a name="label" val="X"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="8" loc="(459,56)" name="Text">
+      <a name="text" val="Feel free to edit it for your needs."/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(459,36)" name="Text">
+      <a name="text" val="Simple testbench for manual testing of FSM_2PHS"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+  </circuit>
+  <circuit name="FSM_SQROOT">
+    <a name="circuit" val="FSM_SQROOT"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <comp lib="8" loc="(394,55)" name="Text">
+      <a name="text" val="Modify Status and Command signals for Datapath"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(391,38)" name="Text">
+      <a name="text" val="Controller for Part 2"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="0" loc="(160,180)" name="Pin">
+      <a name="label" val="STATUS"/>
+    </comp>
+    <comp lib="0" loc="(160,120)" name="Pin">
+      <a name="label" val="RST"/>
+    </comp>
+    <comp lib="0" loc="(570,90)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="label" val="DONE"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="0" loc="(160,90)" name="Pin">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="0" loc="(160,150)" name="Pin">
+      <a name="label" val="GO"/>
+    </comp>
+    <comp lib="0" loc="(570,120)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="label" val="COMMAND"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="8" loc="(391,22)" name="Text">
+      <a name="text" val="You Need to Edit This"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(430,226)" name="Text">
+      <a name="text" val="If you don't need controller, just feed GO to COMMAND, and STATUS to DONE"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+  </circuit>
+  <circuit name="DP_SQROOT">
+    <a name="circuit" val="DP_SQROOT"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <comp lib="0" loc="(160,120)" name="Pin">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="0" loc="(160,180)" name="Pin">
+      <a name="label" val="COMMAND"/>
+    </comp>
+    <comp lib="0" loc="(160,210)" name="Pin">
+      <a name="width" val="16"/>
+      <a name="label" val="DIN"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="0" loc="(160,150)" name="Pin">
+      <a name="label" val="RST"/>
+    </comp>
+    <comp lib="0" loc="(570,150)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="width" val="8"/>
+      <a name="label" val="DOUT"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="0" loc="(570,120)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="label" val="STATUS"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="8" loc="(394,61)" name="Text">
+      <a name="text" val="Modify Status and Command signals for Controller"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(390,23)" name="Text">
+      <a name="text" val="You Need to Edit This"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(390,41)" name="Text">
+      <a name="text" val="Datapath for Part 2"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(416,82)" name="Text">
+      <a name="text" val="If you don't have a controller then COMMAND is GO, and STATUS is DONE"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+  </circuit>
+  <circuit name="MAIN">
+    <a name="circuit" val="MAIN"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <wire from="(320,200)" to="(320,270)"/>
+    <wire from="(320,340)" to="(320,410)"/>
+    <wire from="(320,330)" to="(510,330)"/>
+    <wire from="(340,230)" to="(340,370)"/>
+    <wire from="(330,250)" to="(330,390)"/>
+    <wire from="(470,80)" to="(590,80)"/>
+    <wire from="(230,80)" to="(340,80)"/>
+    <wire from="(240,430)" to="(350,430)"/>
+    <wire from="(340,80)" to="(340,230)"/>
+    <wire from="(330,100)" to="(330,250)"/>
+    <wire from="(320,140)" to="(360,140)"/>
+    <wire from="(520,250)" to="(520,340)"/>
+    <wire from="(230,100)" to="(330,100)"/>
+    <wire from="(500,390)" to="(590,390)"/>
+    <wire from="(480,100)" to="(480,200)"/>
+    <wire from="(320,200)" to="(480,200)"/>
+    <wire from="(320,270)" to="(350,270)"/>
+    <wire from="(320,290)" to="(350,290)"/>
+    <wire from="(330,100)" to="(360,100)"/>
+    <wire from="(320,410)" to="(350,410)"/>
+    <wire from="(340,80)" to="(360,80)"/>
+    <wire from="(330,250)" to="(350,250)"/>
+    <wire from="(330,390)" to="(350,390)"/>
+    <wire from="(500,230)" to="(520,230)"/>
+    <wire from="(500,250)" to="(520,250)"/>
+    <wire from="(320,140)" to="(320,180)"/>
+    <wire from="(320,290)" to="(320,330)"/>
+    <wire from="(510,330)" to="(510,370)"/>
+    <wire from="(470,100)" to="(480,100)"/>
+    <wire from="(500,370)" to="(510,370)"/>
+    <wire from="(340,230)" to="(350,230)"/>
+    <wire from="(340,370)" to="(350,370)"/>
+    <wire from="(520,180)" to="(520,230)"/>
+    <wire from="(320,180)" to="(520,180)"/>
+    <wire from="(230,120)" to="(360,120)"/>
+    <wire from="(320,340)" to="(520,340)"/>
+    <comp loc="(470,80)" name="FSM_2PHS"/>
+    <comp loc="(500,230)" name="FSM_SQROOT"/>
+    <comp loc="(500,370)" name="DP_SQROOT"/>
+    <comp lib="0" loc="(230,80)" name="Pin">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="0" loc="(230,100)" name="Pin">
+      <a name="label" val="RST"/>
+    </comp>
+    <comp lib="0" loc="(230,120)" name="Pin">
+      <a name="label" val="REQ"/>
+    </comp>
+    <comp lib="0" loc="(240,430)" name="Pin">
+      <a name="width" val="16"/>
+      <a name="label" val="DIN"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="0" loc="(590,80)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="label" val="ACK"/>
+      <a name="labelloc" val="east"/>
+    </comp>
+    <comp lib="0" loc="(590,390)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="width" val="8"/>
+      <a name="label" val="DOUT"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="8" loc="(422,34)" name="Text">
+      <a name="text" val="No Need to Edit This"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+  </circuit>
+  <circuit name="TB_MAIN">
+    <a name="circuit" val="TB_MAIN"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <wire from="(580,170)" to="(580,210)"/>
+    <wire from="(140,250)" to="(460,250)"/>
+    <wire from="(450,270)" to="(450,370)"/>
+    <wire from="(200,140)" to="(200,210)"/>
+    <wire from="(600,230)" to="(600,370)"/>
+    <wire from="(140,140)" to="(200,140)"/>
+    <wire from="(570,230)" to="(600,230)"/>
+    <wire from="(170,370)" to="(450,370)"/>
+    <wire from="(400,140)" to="(410,140)"/>
+    <wire from="(450,230)" to="(460,230)"/>
+    <wire from="(450,270)" to="(460,270)"/>
+    <wire from="(200,140)" to="(210,140)"/>
+    <wire from="(600,370)" to="(730,370)"/>
+    <wire from="(450,170)" to="(450,230)"/>
+    <wire from="(410,140)" to="(410,230)"/>
+    <wire from="(570,210)" to="(580,210)"/>
+    <wire from="(410,230)" to="(450,230)"/>
+    <wire from="(200,210)" to="(460,210)"/>
+    <comp lib="0" loc="(140,140)" name="Clock">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="11" loc="(400,140)" name="poweron_reset_random"/>
+    <comp lib="8" loc="(458,36)" name="Text">
+      <a name="text" val="Testbench for manual testing of MAIN system"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="0" loc="(140,110)" name="Clock">
+      <a name="label" val="sysclk"/>
+    </comp>
+    <comp loc="(570,210)" name="MAIN">
+      <a name="label" val="DUT"/>
+    </comp>
+    <comp lib="5" loc="(450,170)" name="LED">
+      <a name="facing" val="south"/>
+      <a name="label" val="REQis1"/>
+    </comp>
+    <comp lib="5" loc="(580,170)" name="LED">
+      <a name="facing" val="south"/>
+      <a name="label" val="ACKis1"/>
+    </comp>
+    <comp lib="0" loc="(170,370)" name="Pin">
+      <a name="width" val="16"/>
+      <a name="label" val="DIN"/>
+      <a name="radix" val="10unsigned"/>
+    </comp>
+    <comp lib="8" loc="(147,397)" name="Text">
+      <a name="text" val="X"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="0" loc="(730,370)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="width" val="8"/>
+      <a name="label" val="DOUT"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="10unsigned"/>
+    </comp>
+    <comp lib="8" loc="(748,395)" name="Text">
+      <a name="text" val="sqrt(X)"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="0" loc="(140,250)" name="Pin">
+      <a name="label" val="REQ"/>
+    </comp>
+    <comp lib="8" loc="(459,56)" name="Text">
+      <a name="text" val="Feel free to edit it for your needs."/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+  </circuit>
+  <circuit name="DONTUSE_TB_AUTO_FSM_2PHS">
+    <a name="circuit" val="DONTUSE_TB_AUTO_FSM_2PHS"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <wire from="(410,310)" to="(600,310)"/>
+    <wire from="(160,230)" to="(410,230)"/>
+    <wire from="(130,570)" to="(130,580)"/>
+    <wire from="(130,610)" to="(130,620)"/>
+    <wire from="(420,620)" to="(470,620)"/>
+    <wire from="(160,540)" to="(470,540)"/>
+    <wire from="(410,270)" to="(460,270)"/>
+    <wire from="(410,230)" to="(460,230)"/>
+    <wire from="(570,410)" to="(760,410)"/>
+    <wire from="(440,420)" to="(440,430)"/>
+    <wire from="(420,490)" to="(720,490)"/>
+    <wire from="(760,380)" to="(760,410)"/>
+    <wire from="(170,250)" to="(170,530)"/>
+    <wire from="(130,620)" to="(170,620)"/>
+    <wire from="(410,140)" to="(410,230)"/>
+    <wire from="(140,140)" to="(170,140)"/>
+    <wire from="(570,210)" to="(720,210)"/>
+    <wire from="(390,210)" to="(390,370)"/>
+    <wire from="(130,370)" to="(350,370)"/>
+    <wire from="(180,330)" to="(720,330)"/>
+    <wire from="(440,390)" to="(460,390)"/>
+    <wire from="(440,410)" to="(460,410)"/>
+    <wire from="(440,430)" to="(460,430)"/>
+    <wire from="(570,370)" to="(600,370)"/>
+    <wire from="(170,140)" to="(170,250)"/>
+    <wire from="(410,270)" to="(410,310)"/>
+    <wire from="(400,140)" to="(410,140)"/>
+    <wire from="(850,430)" to="(850,490)"/>
+    <wire from="(720,210)" to="(720,330)"/>
+    <wire from="(440,340)" to="(440,390)"/>
+    <wire from="(200,140)" to="(210,140)"/>
+    <wire from="(570,230)" to="(650,230)"/>
+    <wire from="(450,530)" to="(450,590)"/>
+    <wire from="(420,420)" to="(420,490)"/>
+    <wire from="(200,210)" to="(390,210)"/>
+    <wire from="(200,140)" to="(200,210)"/>
+    <wire from="(850,380)" to="(850,390)"/>
+    <wire from="(720,490)" to="(720,620)"/>
+    <wire from="(130,370)" to="(130,570)"/>
+    <wire from="(160,270)" to="(160,540)"/>
+    <wire from="(440,410)" to="(440,420)"/>
+    <wire from="(170,620)" to="(170,640)"/>
+    <wire from="(350,250)" to="(460,250)"/>
+    <wire from="(130,570)" to="(170,570)"/>
+    <wire from="(170,140)" to="(200,140)"/>
+    <wire from="(160,270)" to="(190,270)"/>
+    <wire from="(380,580)" to="(470,580)"/>
+    <wire from="(570,390)" to="(850,390)"/>
+    <wire from="(700,620)" to="(720,620)"/>
+    <wire from="(650,230)" to="(650,340)"/>
+    <wire from="(440,340)" to="(650,340)"/>
+    <wire from="(330,250)" to="(350,250)"/>
+    <wire from="(180,290)" to="(180,330)"/>
+    <wire from="(160,230)" to="(160,270)"/>
+    <wire from="(170,530)" to="(450,530)"/>
+    <wire from="(420,420)" to="(440,420)"/>
+    <wire from="(450,590)" to="(470,590)"/>
+    <wire from="(170,250)" to="(190,250)"/>
+    <wire from="(340,570)" to="(350,570)"/>
+    <wire from="(340,590)" to="(350,590)"/>
+    <wire from="(180,290)" to="(190,290)"/>
+    <wire from="(600,310)" to="(600,370)"/>
+    <wire from="(720,490)" to="(850,490)"/>
+    <wire from="(340,590)" to="(340,640)"/>
+    <wire from="(390,370)" to="(460,370)"/>
+    <wire from="(390,210)" to="(460,210)"/>
+    <wire from="(350,250)" to="(350,370)"/>
+    <comp lib="8" loc="(460,59)" name="Text">
+      <a name="text" val="NOT FUNCTIONAL - DONOT USE"/>
+      <a name="font" val="SansSerif bold 12"/>
+    </comp>
+    <comp lib="8" loc="(458,36)" name="Text">
+      <a name="text" val="Testbench for automated testing of TB_FSM_2PHS"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp loc="(570,210)" name="FSM_2PHS">
+      <a name="label" val="DUT"/>
+    </comp>
+    <comp lib="11" loc="(340,570)" name="GenPulseAtNegEdge"/>
+    <comp lib="1" loc="(130,610)" name="NOT Gate">
+      <a name="facing" val="south"/>
+    </comp>
+    <comp lib="11" loc="(330,250)" name="RndDlyHSClient"/>
+    <comp lib="4" loc="(470,510)" name="Counter">
+      <a name="width" val="32"/>
+      <a name="max" val="0xffffffff"/>
+      <a name="ongoal" val="stay"/>
+    </comp>
+    <comp lib="11" loc="(400,140)" name="poweron_reset_random"/>
+    <comp lib="11" loc="(570,370)" name="RndDlyMul"/>
+    <comp lib="0" loc="(420,620)" name="Constant">
+      <a name="width" val="32"/>
+      <a name="value" val="0x0"/>
+    </comp>
+    <comp lib="0" loc="(140,110)" name="Clock">
+      <a name="label" val="sysclk"/>
+    </comp>
+    <comp lib="1" loc="(380,580)" name="OR Gate">
+      <a name="size" val="30"/>
+    </comp>
+    <comp lib="0" loc="(140,140)" name="Clock">
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="11" loc="(340,640)" name="GenPulseAtNegEdge"/>
+    <comp lib="0" loc="(760,380)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="width" val="32"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="0" loc="(850,380)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="width" val="32"/>
+      <a name="label" val="X_SQUARED"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="16"/>
+    </comp>
+    <comp lib="0" loc="(850,430)" name="Pin">
+      <a name="facing" val="south"/>
+      <a name="output" val="true"/>
+      <a name="width" val="32"/>
+      <a name="label" val="X"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="16"/>
+    </comp>
+  </circuit>
+  <circuit name="DONTUSE_TB_AUTO">
+    <a name="circuit" val="DONTUSE_TB_AUTO"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif bold 16"/>
+    <a name="circuitnamedbox" val="true"/>
+    <a name="circuitvhdlpath" val=""/>
+    <wire from="(160,230)" to="(410,230)"/>
+    <wire from="(200,140)" to="(200,210)"/>
+    <wire from="(600,230)" to="(600,370)"/>
+    <wire from="(410,140)" to="(410,230)"/>
+    <wire from="(410,230)" to="(450,230)"/>
+    <wire from="(140,140)" to="(170,140)"/>
+    <wire from="(170,140)" to="(200,140)"/>
+    <wire from="(160,270)" to="(190,270)"/>
+    <wire from="(580,170)" to="(580,210)"/>
+    <wire from="(450,270)" to="(450,370)"/>
+    <wire from="(180,330)" to="(720,330)"/>
+    <wire from="(570,230)" to="(600,230)"/>
+    <wire from="(180,290)" to="(180,330)"/>
+    <wire from="(160,230)" to="(160,270)"/>
+    <wire from="(170,370)" to="(450,370)"/>
+    <wire from="(170,140)" to="(170,250)"/>
+    <wire from="(170,250)" to="(190,250)"/>
+    <wire from="(400,140)" to="(410,140)"/>
+    <wire from="(450,230)" to="(460,230)"/>
+    <wire from="(450,270)" to="(460,270)"/>
+    <wire from="(720,210)" to="(720,330)"/>
+    <wire from="(180,290)" to="(190,290)"/>
+    <wire from="(200,140)" to="(210,140)"/>
+    <wire from="(600,370)" to="(730,370)"/>
+    <wire from="(450,170)" to="(450,230)"/>
+    <wire from="(330,250)" to="(460,250)"/>
+    <wire from="(580,210)" to="(720,210)"/>
+    <wire from="(570,210)" to="(580,210)"/>
+    <wire from="(200,210)" to="(460,210)"/>
+    <comp lib="11" loc="(400,140)" name="poweron_reset_random"/>
+    <comp lib="11" loc="(330,250)" name="RndDlyHSClient"/>
+    <comp lib="8" loc="(147,397)" name="Text">
+      <a name="text" val="X"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="0" loc="(730,370)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="width" val="8"/>
+      <a name="labelloc" val="east"/>
+      <a name="radix" val="10unsigned"/>
+    </comp>
+    <comp lib="8" loc="(748,395)" name="Text">
+      <a name="text" val="sqrt(X)"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp lib="8" loc="(458,36)" name="Text">
+      <a name="text" val="Testbench for automated testing of MAIN system"/>
+      <a name="font" val="SansSerif plain 12"/>
+    </comp>
+    <comp loc="(570,210)" name="MAIN"/>
+    <comp lib="0" loc="(140,140)" name="Clock"/>
+    <comp lib="5" loc="(580,170)" name="LED">
+      <a name="facing" val="south"/>
+    </comp>
+    <comp lib="5" loc="(450,170)" name="LED">
+      <a name="facing" val="south"/>
+    </comp>
+    <comp lib="0" loc="(140,110)" name="Clock"/>
+    <comp lib="0" loc="(170,370)" name="Pin">
+      <a name="width" val="16"/>
+      <a name="radix" val="10unsigned"/>
+    </comp>
+  </circuit>
+</project>

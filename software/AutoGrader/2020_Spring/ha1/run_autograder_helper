@@ -1,0 +1,143 @@
+#!/bin/bash -f
+
+AGHOME=`pwd`
+HWNAME="ha1"
+TESTING=
+
+NAME=`jq .users\[0\].name "$AGHOME"/submission_metadata.json`
+EMAIL=`jq .users\[0\].email "$AGHOME"/submission_metadata.json`
+ASSIGNMENT=`jq -c .assignment.title "$AGHOME"/submission_metadata.json`
+echo Welcome "$NAME" to autograder for "$ASSIGNMENT"
+
+cd "$AGHOME"/submission
+
+if [[ -d '__MACOSX' ]]; then
+	rm -rf __MACOSX
+fi
+
+if [ `ls -1 | wc -l` -eq "1" ]
+then
+	cd `ls -1`
+fi
+
+if [ -d "${HWNAME}_files" ]
+then
+	cd ${HWNAME}_files
+fi
+
+if [ -d "$HWNAME" ]
+then
+	cd $HWNAME
+fi
+
+# based on https://unix.stackexchange.com/questions/9496/looping-through-files-with-spaces-in-the-names
+OIFS="$IFS"
+IFS=$'\n'
+for f in `find . -type f | grep -v __MACOSX | grep -v DS_Store | grep -v Icon`
+do
+  echo "$f: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+done
+IFS="$OIFS"
+
+echo ""
+
+# check required files
+FILES="ha1_task1.v ha1_task2.v ha1_task3.v ha1_task4.v ha1_task5.v ha1_task1_tb.v ha1_task2_tb.v ha1_task3_tb.v ha1_task4_tb.v ha1_task5_tb.v"
+
+for f in $FILES
+do
+	rm -f "$AGHOME"/source/$f
+	if test -f "$f"; then
+		echo "Required file $f exists: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+		cp $f "$AGHOME"/source/$f
+	else
+		echo "Required file $f not found. Trying alternate file ${f%.*}.sv"
+		if test -f "${f%.*}.sv"; then
+			echo "Alternate file ${f%.*}.sv found. Moving to ${f%.*}.v"
+			mv ${f%.*}.sv $f
+			echo "Required file $f exists: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+			cp $f "$AGHOME"/source/$f
+		else
+			echo "Neither required file $f nor alternate file ${f%.*}.sv found."
+		fi
+	fi
+done
+
+cd "$AGHOME"/source
+
+echo ""
+
+if [ $TESTING ]
+then
+	if [ -f "$AGHOME"/submission_metadata.json ]
+	then
+		if [ "$EMAIL" != '"mbs@ee.ucla.edu"' ]
+		then
+			echo "Autograder is running in testing mode, and so exiting."
+			cat results_default.json > "$AGHOME"/results/results.json
+			exit 0
+		else
+			echo "Autograder is running in testing mode, but still proceeding because of special user."
+		fi
+	else
+		echo "Autograder is running in testing mode, but still proceeding because of local execution."
+	fi
+else
+	echo "Autograder is running in deployment mode!"
+fi
+
+echo "Autograder is in deployment mode"
+
+
+FILES="ha1_task1.v ha1_task2.v ha1_task3.v ha1_task4.v ha1_task5.v"
+
+wget -q -O ha1_task1_tb_ref.v https://www.dropbox.com/s/pjgj0te6gez51cm/ha1_task1_tb_ref.v?raw=1
+wget -q -O ha1_task2_tb_ref.v https://www.dropbox.com/s/k6h4pi8mqi54u9c/ha1_task2_tb_ref.v?raw=1
+wget -q -O ha1_task3_tb_ref.v https://www.dropbox.com/s/srvliltto1devcb/ha1_task3_tb_ref.v?raw=1
+wget -q -O ha1_task4_tb_ref.v https://www.dropbox.com/s/t6wuxc3aspbnbcq/ha1_task4_tb_ref.v?raw=1
+wget -q -O ha1_task5_tb_ref.v https://www.dropbox.com/s/gkhnrt7bd1d6p6a/ha1_task5_tb_ref.v?raw=1
+
+for f in $FILES
+do
+	if test -f "$f"; then
+		rm -f ${f%.*}.out a.out
+		echo
+		echo Processing "$f"
+		echo "iverilog -Wall -g2012 ${f%.*}_tb_ref.v $f"
+		iverilog -Wall -g2012 ${f%.*}_tb_ref.v $f
+		if [ -e "a.out" ]
+		then
+			vvp a.out > ${f%.*}.out
+			rm -f a.out
+			echo ${f%.*}.out
+			#cat ${f%.*}.out
+		else
+			echo "Verilog compilation failed"
+		fi
+	else
+		echo "File $f not available."
+	fi
+done
+
+#echo "Bye"
+#cat results_default.json > "$AGHOME"/results/results.json
+#exit 0
+
+echo ""
+echo "Downloading grading program [gen_results.py]."
+rm -f gen_results.py
+wget -q -O gen_results.py https://www.dropbox.com/s/1kih3gl24yerjxz/gen_results.py?raw=1
+
+grep EEM16 gen_results.py > /dev/null
+
+if [ $? -ne 0 ]
+then 
+	echo ""
+	echo "Error: problem in downloading gen_results.py."
+	cat results_error.json > "$AGHOME"/results/results.json
+else 
+	echo ""
+	echo "Running grading program [gen_results.py]."
+	AGHOME="$AGHOME" python3 gen_results.py
+fi
+echo ""

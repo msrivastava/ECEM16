@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Set up autograder files
+
+cd /autograder/source
+
+wget -q -O run_autograder_helper.sh https://www.dropbox.com/s/2umc1fb69g841ka/run_autograder_helper.sh?raw=1
+
+chmod +x run_autograder_helper
+
+./run_autograder_helper

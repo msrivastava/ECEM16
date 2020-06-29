@@ -1,0 +1,8 @@
+ 6	 6	Pin        	Wiring
+46	46	Tunnel     	Wiring
+12	12	AND Gate   	Gates
+ 8	 8	OR Gate    	Gates
+ 6	 6	D Flip-Flop	Memory
+ 6	 6	Label      	Base
+84	84	TOTAL (without project's subcircuits)
+84	84	TOTAL (with subcircuits)

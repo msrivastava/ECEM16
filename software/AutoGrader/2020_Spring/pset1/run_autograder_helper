@@ -1,0 +1,153 @@
+#!/bin/bash -f
+#!/bin/bash -f
+
+AGHOME=`pwd`
+HWNAME="pset1"
+TESTING=
+
+NAME=`jq .users\[0\].name "$AGHOME"/submission_metadata.json`
+EMAIL=`jq .users\[0\].email "$AGHOME"/submission_metadata.json`
+ASSIGNMENT=`jq -c .assignment.title "$AGHOME"/submission_metadata.json`
+echo Welcome "$NAME" to autograder for "$ASSIGNMENT"
+
+cd "$AGHOME"/submission
+
+if [[ -d '__MACOSX' ]]; then
+	rm -rf __MACOSX
+fi
+
+if [ `ls -1 | wc -l` -eq "1" ]
+then
+	cd `ls -1`
+fi
+
+if [ -d "${HWNAME}_files" ]
+then
+	cd ${HWNAME}_files
+fi
+
+if [ -d "$HWNAME" ]
+then
+	cd $HWNAME
+fi
+
+HWHOME=`pwd`
+
+# based on https://unix.stackexchange.com/questions/9496/looping-through-files-with-spaces-in-the-names
+OIFS="$IFS"
+IFS=$'\n'
+for f in `find . -type f | grep -v __MACOSX | grep -v DS_Store | grep -v Icon`
+do
+  echo "$f: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+done
+IFS="$OIFS"
+
+echo ""
+
+mkdir "$AGHOME"/source/assets_4 "$AGHOME"/source/assets_5 "$AGHOME"/source/assets_6
+
+# check required files
+FILES="answers.txt 3_3.pdf assets_4/month31.circ assets_6/thermometer_encoder.circ"
+
+for f in $FILES
+do
+	rm -f "$AGHOME"/source/$f
+	if test -f "$f"; then
+		echo "Required file $f exists: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+		cp $f "$AGHOME"/source/$f
+	else
+		echo "Required file $f not found."
+	fi
+done
+
+# must have:
+#  
+# 
+# assets_5/boolean_counting.circ or assets_5/ternary_operator.circ
+
+
+wget -q -O grading_info.pkl https://www.dropbox.com/s/od6jd8snnvh38hk/grading_info.pkl?raw=1
+cp grading_info.pkl "$AGHOME"/source
+
+wget -q -O roster.csv https://www.dropbox.com/s/j233s6t3xs3xndj/roster.csv?raw=1
+cp roster.csv "$AGHOME"/source
+
+wget -q -O probver.py https://www.dropbox.com/s/t2aave8kytijpl2/probver.py?raw=1
+chmod +x probver.py
+
+P5VERSION=`./probver.py 5`
+
+FILE=""
+if [ $P5VERSION -eq "1" ]
+then
+	FILE="assets_5/boolean_counting.circ"
+elif [ $P5VERSION -eq "2" ]
+then
+	FILE="assets_5/ternary_operator.circ"
+fi
+
+for f in $FILES
+do
+	rm -f "$AGHOME"/source/$f
+	if test -f "$f"; then
+		echo "Required file $f exists: size=`wc -c $f | awk '{print $1;}'` md5sum=`md5sum $f | awk '{print $1;}'`"
+		cp $f "$AGHOME"/source/$f
+	else
+		echo "Required file $f not found."
+	fi
+done
+
+# Optional extra credit files
+FILES="8.pdf 9.pdf"
+for f in $FILES
+do
+	if test -f "$f"; then
+		echo "File $f for extra credit problem exists."
+	else
+		echo "File $f for extra credit problem does not exist."
+	fi
+done
+
+cd "$AGHOME"/source
+
+echo ""
+
+if [ $TESTING ]
+then
+	if [ -f "$AGHOME"/submission_metadata.json ]
+	then
+		if [ "$EMAIL" != '"mbs@ee.ucla.edu"' ]
+		then
+			echo "Autograder is running in testing mode, and so exiting."
+			cat results_default.json > "$AGHOME"/results/results.json
+			exit 0
+		else
+			echo "Autograder is running in testing mode, but still proceeding because of special user."
+		fi
+	else
+		echo "Autograder is running in testing mode, but still proceeding because of local execution."
+	fi
+else
+	echo "Autograder is running in deployment mode!"
+fi
+
+echo "Autograder is in deployment mode"
+
+echo ""
+echo "Downloading grading program [gen_results.py]."
+rm -f gen_results.py
+wget -q -O gen_results.py https://www.dropbox.com/s/jy9ibmt5m2t917k/gen_results.py?raw=1
+
+grep EEM16 gen_results.py > /dev/null
+
+if [ $? -ne 0 ]
+then 
+	echo ""
+	echo "Error: problem in downloading gen_results.py."
+	cat results_error.json > "$AGHOME"/results/results.json
+else 
+	echo ""
+	echo "Running grading program [gen_results.py]."
+	AGHOME="$AGHOME" python3 gen_results.py
+fi
+echo ""

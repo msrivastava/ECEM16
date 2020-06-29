@@ -1,0 +1,23 @@
+  1	  1	FSM_2PHS    	final_MAIN
+  1	  1	FSM_SQROOT  	final_MAIN
+  1	  1	DP_SQROOT   	final_MAIN
+  1	  1	if1         	final_MAIN
+  1	  1	abscond     	final_MAIN
+ 33	 33	Pin         	Wiring
+107	107	Tunnel      	Wiring
+ 12	 12	Constant    	Wiring
+  5	  5	Bit Extender	Wiring
+  6	  6	NOT Gate    	Gates
+ 18	 18	AND Gate    	Gates
+ 15	 15	OR Gate     	Gates
+ 13	 13	Multiplexer 	Plexers
+  4	  4	Adder       	Arithmetic
+  3	  3	Subtractor  	Arithmetic
+  3	  3	Multiplier  	Arithmetic
+  1	  1	Divider     	Arithmetic
+  5	  5	Comparator  	Arithmetic
+  7	  7	D Flip-Flop 	Memory
+  4	  4	Register    	Memory
+ 24	 24	Label       	Base
+260	260	TOTAL (without project's subcircuits)
+265	265	TOTAL (with subcircuits)
