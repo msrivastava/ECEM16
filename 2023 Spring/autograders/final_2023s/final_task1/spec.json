@@ -37,7 +37,7 @@
 			"dut": {"file":"final_task1.circ", "circuit":"DUT"},
 			"tb": {"file":"final_task1_tester.circ", "circuit":"Tester"},
 			"max_functionality_score": 60,
-			"max_quality_score": 20,
+			"max_area_score": 20,
 			"tests_at_submission_count":0,
 			"tests_at_grading_percent":100,
 			"minimum_penalty_percent":20,
