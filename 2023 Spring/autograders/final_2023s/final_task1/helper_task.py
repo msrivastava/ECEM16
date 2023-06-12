@@ -13,7 +13,7 @@ def validate_effort_func(p,state):
     f1 = (state['ticks']>2)
     f2 = (p["# components"]>50)
     f3 = (state['errrec']['nonbinary']<0.8*state['ticks'])
-    f4 = (state["correct_dout"]>1)
+    f4 = (state["correct_dist"]>1)
     return f1 and f2 and f3 and f4
 
 def runtimestats_func(p,state):
@@ -40,16 +40,14 @@ def stateupdate_func(state,t,sigrec):
         if rising_edge('GO1',t,sigrec): 
             state["t_arrivals_1"].append(t)
             state['opcount'] += 1
-            state['DIN1'] = sigrec['DIN1']['val']
+            state['X1'] = sigrec['X1']['val']
+            state['Y1'] = sigrec['Y1']['val']
         if rising_edge('GO2',t,sigrec): 
             state["t_arrivals_2"].append(t)
             state['opcount'] += 1
-            state['DIN2'] = sigrec['DIN2']['val']
-        if rising_edge('GO3',t,sigrec): 
-            state["t_arrivals_3"].append(t)
-            state['opcount'] += 1
-            state['DIN3'] = sigrec['DIN3']['val']
-        if state['opcount']==3 and (rising_edge('GO1',t,sigrec) or rising_edge('GO2',t,sigrec) or rising_edge('GO3',t,sigrec)):
+            state['X2'] = sigrec['X2']['val']
+            state['Y2'] = sigrec['Y2']['val']
+        if state['opcount']==3 and (rising_edge('GO1',t,sigrec) or rising_edge('GO2',t,sigrec)):
             state["t_arrivals"].append(t)
             state["jobs_arrived"] += 1
         if rising_edge('DONE',t,sigrec):
@@ -60,9 +58,10 @@ def stateupdate_func(state,t,sigrec):
             else:
                 state["execution_times"].append(None)
         if falling_edge('DONE',t,sigrec):
-            state['DIN1'] = None
-            state['DIN2'] = None
-            state['DIN3'] = None
+            state['X1'] = None
+            state['Y1'] = None
+            state['X2'] = None
+            state['Y2'] = None
             state['opcount'] = 0
     #print(f"state: {state}")
     return
@@ -84,19 +83,23 @@ def check_protocol_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None
         return False
     return True
 
+def compute_distance(X1,Y1,X2,Y2):
+    return 0
+
 def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     errrec = state["errrec"]
-    errtype = errtype if errtype!=None else "dout_value"
+    errtype = errtype if errtype!=None else "dist_value"
     if rising_edge('DONE',t,sigrec):
-        state["total_dout"] += 1
+        state["total_dist"] += 1
         try:
-            DIN1 = twos(signextend(state['DIN1'],4),4)
-            DIN2 = twos(signextend(state['DIN2'],4),4)
-            DIN3 = twos(signextend(state['DIN3'],4),4)
-            DOUT = twos(signextend(sigrec['DOUT']['val'],4),4)
-            #print(f"median({DIN1},{DIN2},{DIN3})={DOUT}")
-            assert statistics.median([DIN1,DIN2,DIN3])==DOUT
-            state["correct_dout"] += 1
+            X1 = twos(signextend(state['X1'],4),4)
+            Y1 = twos(signextend(state['Y1'],4),4)
+            X2 = twos(signextend(state['X2'],4),4)
+            Y2 = twos(signextend(state['Y2'],4),4)
+            DIST = twos(signextend(sigrec['DIST']['val'],4),4)
+            #print(f"distance(({X1},{Y1}),({(X2},{Y2}))={DIST}")
+            assert statistics.median([X1,Y1,X2,Y2])==DIST
+            state["correct_dist"] += 1
         except:
             errrec['total'] = errrec.get('total',0)+1
             errrec[errtype] = errrec.get(errtype,0)+1
@@ -120,10 +123,10 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
     #    test["score"] = -1
     #    return -1
     elif state["jobs_completed"]==0:
-        print(f"Raw functionality score = 0 as no DOUT was produced.")
+        print(f"Raw functionality score = 0 as no DIST was produced.")
         test["score"] = 0
         return 0
-    elif state['errrec']['protocol']>0 and state['correct_dout']==0:
+    elif state['errrec']['protocol']>0 and state['correct_dist']==0:
         print(f"Raw functionality score = 0 as both control and data flawed.")
         test["score"] = 0
         return 0
@@ -138,11 +141,11 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         print(f"Fraction of clocks with no error = {fraction_good_clocks}.")
         fraction_jobs_done = min(1,(state['jobs_completed']+state['resets_done'])/state['jobs_arrived'])
         print(f"Fraction of jobs done = {fraction_jobs_done}.")
-        fraction_good_dout = state['correct_dout']/state['total_dout']
-        print(f"Fraction of jobs completed that were correct = {fraction_good_dout}.")
+        fraction_good_dist = state['correct_dist']/state['total_dist']
+        print(f"Fraction of jobs completed that were correct = {fraction_good_dist}.")
         #if fraction_good_clocks<1:
         #    max_functionality_score = max_functionality_score*(1-0.01*p['minimum_penalty_percent'])
-        actual_functionality_score = max_functionality_score*min(fraction_good_clocks,(0.25*fraction_jobs_done+0.75*fraction_good_dout))
+        actual_functionality_score = max_functionality_score*min(fraction_good_clocks,(0.25*fraction_jobs_done+0.75*fraction_good_dist))
         print(f"Functionality score = {actual_functionality_score}.")
         sfa = p["tester"]["scoring_func_args"] if ("tester" in p and "scoring_func_args" in p["tester"]) else None
         if state['errrec']['badclockticks']>0:

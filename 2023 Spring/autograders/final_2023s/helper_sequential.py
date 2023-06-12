@@ -219,8 +219,7 @@ def check_event_is_when_signal_at_value(tester,t,sigrec,state,msgs=None,params=N
         errrec[errtype] = errrec.get(errtype,0)+1
         return False
 
-# this is newer than the function in final/helper.py 
-def check_signal_value_at_event(tester,t,sigrec,state,msgs=None,params=None,errtype="dout_value"):
+def check_signal_value_at_event(tester,t,sigrec,state,msgs=None,params=None,errtype="dist_value"):
     resetsig = None
     for e in tester['pins']:
         if resetsig==None and e.get('reset_sig',0)==1:
@@ -290,7 +289,6 @@ def check_signal_value_at_event(tester,t,sigrec,state,msgs=None,params=None,errt
         errrec[errtype] = errrec.get(errtype,0)+1
         return False
 
-# this is newer than the function in final/helper.py 
 def check_signal_stable_after_event1_until_event2(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     resetsig = None
     for e in tester['pins']:

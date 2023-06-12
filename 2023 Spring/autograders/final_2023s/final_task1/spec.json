@@ -4,33 +4,40 @@
 		"mbs@ee.ucla.edu"
 	],
 	"required_files": [
-		"da1_task4.circ" 
+		"final_task1.circ" 
 	],
-	"optional_files": ["da1_task4.gv", "M16 Components.circ"],
-	"helper_module_url": "https://www.dropbox.com/s/ax53hg1t6iju85n/helper_sequential.py?raw=1",
-	"helper_module_task_url": "https://www.dropbox.com/s/tk1bxycl5gyhhlp/helper_task.py?raw=1",
+	"optional_files": [
+		"final_task1_1.gv", 
+		"final_task1_2.gv",
+		"final_task1_3.gv",
+		"final_task1_4.gv",
+		"final_task1_5.gv",
+		"M16 Components.circ"
+	],
+	"helper_module_url": "https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/helper_sequential.py",
+	"helper_module_task_url": "https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/final_task1/helper_task.py",
 	"stats_gsheet": {
-		"name": "da1_task4_2023s_perfstats",
+		"name": "final_task1_2023s_perfstats",
 		"worksheet": 0
 	},
 	"grader_files": [
 		{
 			"name":"M16 Components.circ", 
-			"url":"https://www.dropbox.com/s/e1xsqaentpjrek8/M16%20Components.circ?raw=1"
+			"url":"https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/final_task1/M16%20Components.circ"
 		},
 		{
-			"name":"da1_task4_tester.circ", 
-			"url":"https://www.dropbox.com/s/zeri6sh7mh4mtxw/da1_task4_tester.circ?raw=1"
+			"name":"final_task1_tester.circ", 
+			"url":"https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/final_task1/final_task1_tester.circ"
 		}
 	],
 	"problem_specs": [
 		{
-			"id": "4",
+			"id": "1",
 			"test_type": "sequential",
-			"dut": {"file":"da1_task4.circ", "circuit":"DUT"},
-			"tb": {"file":"da1_task4_tester.circ", "circuit":"Tester"},
-			"max_functionality_score": 45,
-			"max_area_score": 15,
+			"dut": {"file":"final_task1.circ", "circuit":"DUT"},
+			"tb": {"file":"final_task1_tester.circ", "circuit":"Tester"},
+			"max_functionality_score": 60,
+			"max_quality_score": 20,
 			"tests_at_submission_count":0,
 			"tests_at_grading_percent":100,
 			"minimum_penalty_percent":20,
@@ -39,19 +46,18 @@
 			"percent_penalty_total_component_count":100,
 			"percent_penalty_individual_component_count":100,
 			"min_score_percent_for_decent_effort":15,
-			"percent_score_for_area": 25,
 			"inputs": [
-				{"name":"DIN1", "base":2, "length":16},
-				{"name":"DIN2", "base":2, "length":16},
-				{"name":"DIN3", "base":2, "length":16},
+				{"name":"X1", "base":2, "length":8},
+				{"name":"Y1", "base":2, "length":8},
+				{"name":"X2", "base":2, "length":8},
+				{"name":"Y2", "base":2, "length":8},
 				{"name":"GO1", "base":2, "length":1},
 				{"name":"GO2", "base":2, "length":1},
-				{"name":"GO3", "base":2, "length":1},
 				{"name":"CLK", "base":2, "length":1},
 				{"name":"RST", "base":2, "length":1}
 			],
 			"outputs": [
-				{"name":"DOUT", "base":2, "length":16},
+				{"name":"DIST", "base":2, "length":16},
 				{"name":"DONE", "base":2, "length":1}
 			],
 			"costs": [
@@ -66,7 +72,10 @@
 				{"lib":"Memory","name":"T Flip-Flop","costexpr":"32*{width=1}"},
 				{"lib":"Memory","name":"Register","costexpr":"20*{width=8}"},
 				{"lib":"Plexers","name":"Multiplexer","costexpr":"6*{width=1}*(2**{inputs=1})+ 2*{inputs=1} + (2*{inputs=1}*(2**{inputs=1}) if {inputs=1}>1 else 0)"},
-				{"lib":"Arithmetic","name":"Comparator","costexpr":"28*{width=8}"}
+				{"lib":"Arithmetic","name":"Comparator","costexpr":"28*{width=8}"},
+				{"lib":"Arithmetic","name":"Adder","costexpr":"28*{width=8}"},
+				{"lib":"Arithmetic","name":"Subtractor","costexpr":"28*{width=8}"},
+				{"lib":"Arithmetic","name":"Multiplier","costexpr":"28*{width=8}*{width=8}"}
 			],
 			"logisim": {
 				"allowed_versions": ["3.8.0"],
@@ -75,11 +84,15 @@
 					"I/O"
 				],
 				"allowed_gates": [
-					{"lib":"Gates","name":"NOT Gate","width":"any","maxcount":"50"},
-					{"lib":"Gates","name":"NAND Gate","inputs":"any","width":"any","negated":"0","maxcount":"50"},
+					{"lib":"Gates","name":"NOT Gate","width":"any"},
+					{"lib":"Gates","name":"NAND Gate","inputs":"any","width":"any","negated":"0"},
 					{"lib":"Memory","name":"D Flip-Flop"},
+					{"lib":"Memory","name":"T Flip-Flop"},
 					{"lib":"Memory","name":"Register","width":"any"},
-					{"lib":"Arithmetic","name":"Comparator","width":"16","maxcount":"1"},
+					{"lib":"Arithmetic","name":"Adder","width":"any"},
+					{"lib":"Arithmetic","name":"Subtractor","width":"any"},
+					{"lib":"Arithmetic","name":"Comparator","width":"any"},
+					{"lib":"Arithmetic","name":"Multiplier","width":"any"},
 					{"lib":"Plexers","name":"Multiplexer","width":"16","inputs":"default","maxcount":"2"}
 				],
 				"disallowed_gates": [
@@ -91,7 +104,7 @@
 			},
 			"tester": {
 				"enabled": "True",
-				"t_max": 8000,
+				"t_max": 50000,
 				"t_max_print": 1000,
 				"stateupdate_func": "stateupdate_func",
 				"runtimestats_func": "runtimestats_func",
@@ -99,22 +112,21 @@
 				"endstatevalidation_func_disabled": "validate_endstate_func",
 				"effortchecker_func": "validate_effort_func",
 				"scoring_func": "scoring_func",
-				"scoring_func_args": {"best_area":2118, "threshold_full":1.1, "threshold_zero":2},
+				"scoring_func_args": {"best_area":100, "threshold_full":1.1, "threshold_zero":2},
 				"pins": [
 					{"name":"CYCLE", "length":16, "display":"udec"},
 					{"name":"RST", "length":1, "reset_sig":1, "reset_level":1},
 					{"name":"GO1", "length":1},
 					{"name":"GO2", "length":1},
-					{"name":"GO3", "length":1},
 					{"name":"DONE", "length":1, "binary_check":1,  "reset_check_value":0},
-					{"name":"DIN1", "length":16, "display":"sdec"},
-					{"name":"DIN2", "length":16, "display":"sdec"},
-					{"name":"DIN3", "length":16, "display":"sdec"},
-					{"name":"DOUT", "length":16, "display":"sdec", "binary_check":1},
+					{"name":"X1", "length":8, "display":"sdec"},
+					{"name":"Y1", "length":8, "display":"sdec"},
+					{"name":"X2", "length":8, "display":"sdec"},
+					{"name":"Y2", "length":8, "display":"sdec"},
+					{"name":"DIST", "length":16, "display":"dec", "binary_check":1},
 					{"name":"CNTRST", "length":16, "display":"udec"},
 					{"name":"CNTGO1", "length":16, "display":"udec"},
 					{"name":"CNTGO2", "length":16, "display":"udec"},
-					{"name":"CNTGO3", "length":16, "display":"udec"},
 					{"name":"CNTDONE", "length":16, "display":"udec"}
 				],
 				"state": {
@@ -130,9 +142,9 @@
 					"jobs_completed":0, 
 					"t_completions":[],
 					"execution_times":[],
-					"correct_dout":0,
-					"total_dout":0,
-					"errrec": {"reset":0, "protocol":0, "dout_value":0, "nonbinary":0, "total":0, "badclockticks":0},
+					"correct_dist":0,
+					"total_dist":0,
+					"errrec": {"reset":0, "protocol":0, "dist_value":0, "nonbinary":0, "total":0, "badclockticks":0},
 					"speedrec": {}
 				},
 				"assertions": [
@@ -140,7 +152,7 @@
 						"enabled": "True",
 						"is_fatal":0,
 						"errtype":"nonbinary", 
-						"description":"Non binary signal DONE and/or DOUT"},
+						"description":"Non binary signal DONE and/or DIST"},
 					{"func":"check_signals_at_reset", 
 						"enabled": "True",
 						"is_fatal":0,
@@ -156,8 +168,8 @@
 						"enabled": "True",
 						"params":{},
 						"is_fatal":0,
-						"errtype":"dout_value",
-						"description":"DOUT value is incorrect at DONE event"}
+						"errtype":"dist_value",
+						"description":"DIST value is incorrect at DONE event"}
 				]
 			}
 		}
