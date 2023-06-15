@@ -93,7 +93,7 @@
 					{"lib":"Arithmetic","name":"Subtractor","width":"any"},
 					{"lib":"Arithmetic","name":"Comparator","width":"any"},
 					{"lib":"Arithmetic","name":"Multiplier","width":"any"},
-					{"lib":"Plexers","name":"Multiplexer","width":"16","inputs":"default","maxcount":"2"}
+					{"lib":"Plexers","name":"Multiplexer","width":"any","inputs":"any"}
 				],
 				"disallowed_gates": [
 					{"lib":"Wiring","name":"Transistor"},
