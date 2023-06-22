@@ -47,7 +47,7 @@ def stateupdate_func(state,t,sigrec):
             state['opcount'] += 1
             state['X2'] = sigrec['X2']['val']
             state['Y2'] = sigrec['Y2']['val']
-        if state['opcount']==3 and (rising_edge('GO1',t,sigrec) or rising_edge('GO2',t,sigrec)):
+        if state['opcount']==2 and (rising_edge('GO1',t,sigrec) or rising_edge('GO2',t,sigrec)):
             state["t_arrivals"].append(t)
             state["jobs_arrived"] += 1
         if rising_edge('DONE',t,sigrec):
@@ -69,22 +69,26 @@ def stateupdate_func(state,t,sigrec):
 def check_protocol_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     errrec = state["errrec"]
     errtype = errtype if errtype!=None else "protocol"
-    if rising_edge('DONE',t,sigrec) and state['opcount']!=3:
-        # checking that DONE is asserted only after three operands are there
+    if rising_edge('DONE',t,sigrec) and state['opcount']!=2:
+        # checking that DONE is asserted only after two operands are there
         errrec['total'] = errrec.get('total',0)+1
         errrec[errtype] = errrec.get(errtype,0)+1
         errrec['protocol.opcount'] = errrec.get('protocol.opcount',0)+1
         return False
     elif falling_edge('DONE',t,sigrec) and sigrec['DONE']['t@2'] and t!=sigrec['DONE']['t@2']+1:
+        # checking that DONE is a high pulse of width 1
         errrec['total'] = errrec.get('total',0)+1
         errrec[errtype] = errrec.get(errtype,0)+1
         errrec['protocol.donewidth'] = errrec.get('protocol.donewidth',0)+1
-        # checking that DONE is a high pulse of width 1
         return False
     return True
 
-def compute_distance(X1,Y1,X2,Y2):
-    return 0
+def verify_distance_computation(X1,Y1,X2,Y2,DIST):
+    DISTSQ_ACTUAL = (X1-X2)**2+(Y1-Y2)**2
+    DISTx8_ACTUAL = int(8*math.sqrt(DISTSQ_ACTUAL))
+    DISTx8_OBSERVED = DIST**2
+    print(f"DISTx8_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL}, DISTx8_OBSERVED={DIST}^2={DISTx8_OBSERVED}")
+    return DISTx8_ACTUAL==DISTx8_OBSERVED
 
 def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     errrec = state["errrec"]
@@ -97,10 +101,10 @@ def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=
             X2 = twos(signextend(state['X2'],4),4)
             Y2 = twos(signextend(state['Y2'],4),4)
             DIST = twos(signextend(sigrec['DIST']['val'],4),4)
-            #print(f"distance(({X1},{Y1}),({(X2},{Y2}))={DIST}")
-            assert statistics.median([X1,Y1,X2,Y2])==DIST
+            assert verify_distance_computation(X1,Y1,X2,Y2,DIST)
             state["correct_dist"] += 1
         except:
+            print(f"Incorrect output @ t={t} distance(({X1},{Y1}),({X2},{Y2}))={DIST/8}")
             errrec['total'] = errrec.get('total',0)+1
             errrec[errtype] = errrec.get(errtype,0)+1
             return False
@@ -119,39 +123,74 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         test["output"].append(f"{fatal_error_msg}")
         test["score"] = 0
         return 0
-    #elif 'max_score' not in p.keys():
-    #    test["score"] = -1
-    #    return -1
     elif state["jobs_completed"]==0:
-        print(f"Raw functionality score = 0 as no DIST was produced.")
+        print(f"Raw functionality score = 0 as no DOUT was produced / no DONE=1 was received.")
         test["score"] = 0
         return 0
-    elif state['errrec']['protocol']>0 and state['correct_dist']==0:
-        print(f"Raw functionality score = 0 as both control and data flawed.")
+    elif state['errrec']['protocol']>0 and state['correct_dout']==0:
+        print(f"Raw functionality score = 0 as there were protocol errors and no valid data output was produced.")
         test["score"] = 0
         return 0
     else:
-        max_area_score = p['max_area_score']
         max_functionality_score = p['max_functionality_score']
-        #percent_score_for_area = min(max(0,p.get('percent_score_for_area',0)),100)
-        #percent_score_for_functionality = 100 - percent_score_for_area
-        #max_functionality_score = test["max_score"]*(percent_score_for_functionality/100)
-        #max_area_score = test["max_score"]*(percent_score_for_area/100)
-        fraction_good_clocks = 1-state['errrec']['badclockticks']/state['t_max_expected']
-        print(f"Fraction of clocks with no error = {fraction_good_clocks}.")
+        max_area_score = p['max_area_score']
+        fraction_good_clocks = 1-state['errrec']['badclockticks']/state['t_max']
+        has_bad_clocks = True if state['errrec']['badclockticks']>0 else False
+        print(f"DUT worked incorrectly on {round(100*(1-fraction_good_clocks),2)}% of the clock edges ({state['errrec']['badclockticks']} out of {state['t_max']}).")
+
         fraction_jobs_done = min(1,(state['jobs_completed']+state['resets_done'])/state['jobs_arrived'])
-        print(f"Fraction of jobs done = {fraction_jobs_done}.")
-        fraction_good_dist = state['correct_dist']/state['total_dist']
-        print(f"Fraction of jobs completed that were correct = {fraction_good_dist}.")
-        #if fraction_good_clocks<1:
-        #    max_functionality_score = max_functionality_score*(1-0.01*p['minimum_penalty_percent'])
-        actual_functionality_score = max_functionality_score*min(fraction_good_clocks,(0.25*fraction_jobs_done+0.75*fraction_good_dist))
+        print(f"DUT finished {round(100*fraction_jobs_done,2)}% of the jobs that arrive.")
+        fraction_good_dout = state['correct_dout']/state['total_dout'] if state['total_dout']>0 else 0
+        print(f"DUT computed correctly outputs on {round(100*fraction_good_dout,2)}% of the jobs it completed.")
+
+        has_functionality_error = has_bad_clocks or (fraction_jobs_done<1) or (fraction_good_dout<1)
+
+        if (1-fraction_good_clocks)>p['valid_design_max_percent_failed_tests']/100.0 and test['extra_data']['# of components']<p['valid_design_min_component_count']:
+            print(f"\nThis design seems to be bogus or frivolous: it has {test['extra_data']['# of components']} components and has errors on {100*(1-fraction_good_clocks)}% of the clock ticks tested.")
+            print(f"Zero functionality and area scores.")
+            test["score"]=0
+            return test["score"]
+        if has_functionality_error:
+            max_badclockticks_allowed = state['t_max']*round(float(p['percent_failed_tests_for_zero_score'])/100)
+            max_badoutputs_allowed = state['total_dout']*round(float(p['percent_failed_tests_for_zero_score'])/100)
+            print(f"Errors carry minimum penalty of {float(p['minimum_penalty_percent'])}% and result in zero score upon failures at {float(p['percent_failed_tests_for_zero_score'])}% of tests.")
+            print(f"Maximum # of clock ticks with problems allowed = {max_badclockticks_allowed}")
+            print(f"Maximum # of computation jobs with problems allowed = {max_badoutputs_allowed}")
+            if state['errrec']['badclockticks']>max_badclockticks_allowed or (state['total_dout']-state['correct_dout'])>max_badoutputs_allowed:
+                if state['errrec']['badclockticks']>max_badclockticks_allowed:
+                    print("Too many clock ticks with problems.")
+                if (state['total_dout']-state['correct_dout'])>max_badoutputs_allowed:
+                    print("Too many jobs with bad output values.")
+                actual_functionality_score = 0
+            else:
+                actual_functionality_score = max_functionality_score*(1-0.01*p['minimum_penalty_percent'])
+                delta1 = actual_functionality_score/(max_badclockticks_allowed-1)
+                actual_functionality_score1 = max(0,actual_functionality_score-delta1*(state['errrec']['badclockticks']-1))
+                delta2 = actual_functionality_score/(max_badoutputs_allowed-1)
+                actual_functionality_score2 = max(0,actual_functionality_score-delta2*((state['total_dout']-state['correct_dout'])-1))
+                actual_functionality_score = min(actual_functionality_score1,actual_functionality_score2)
+        else:
+            actual_functionality_score = max_functionality_score
         print(f"Functionality score = {actual_functionality_score}.")
+        #actual_functionality_score = max_functionality_score*min(fraction_good_clocks,(0.25*fraction_jobs_done+0.75*fraction_good_dout))
         sfa = p["tester"]["scoring_func_args"] if ("tester" in p and "scoring_func_args" in p["tester"]) else None
-        if state['errrec']['badclockticks']>0:
-            print(f"No credit for area due to functionality bugs in the design.")
-            test["score"]=actual_functionality_score
-        elif not sfa or not isinstance(sfa,dict) or not set(["best_area", "threshold_full", "threshold_zero"]).issubset(sfa.keys()):
+        prorate_area_score = p.get("prorate_area_score",False)
+        if prorate_area_score:
+            print("Area score is being prorated for functionality.")
+        else:
+            print("Area score is not being prorated for functionality: zero score for area in case of any functionality error.")
+        if has_functionality_error:
+            if prorate_area_score:
+                #area_score_scalefactor = fraction_good_clocks
+                area_score_scalefactor = min(fraction_good_clocks,fraction_good_dout)
+                print(f"Design has at least one functionality error. Base area score will be multiplied by x{area_score_scalefactor}.")
+            else:
+                area_score_scalefactor = 0
+                print(f"Design has functionality errors. Setting area score to 0.")
+        else:
+            area_score_scalefactor = 1
+            print(f"Design has no functionality errors detected. Base area scare will not be derated.")
+        if not sfa or not isinstance(sfa,dict) or not set(["best_area", "threshold_full", "threshold_zero"]).issubset(sfa.keys()):
             print("Warning: did not find proper 'scoring_func_args' to grade area-optimized task. Please report to developers. Setting score to 0.")
             test["score"]=actual_functionality_score
         elif not all(is_numeric(sfa[k]) for k in ["best_area", "threshold_full", "threshold_zero"]) or (sfa["threshold_zero"] <= sfa["threshold_full"]):
@@ -162,10 +201,17 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
             test["score"]=actual_functionality_score
         elif test['extra_data']['component cost']/sfa["best_area"] > sfa["threshold_full"]:
             adjusted_area_score = max_area_score*(sfa["threshold_zero"]-test['extra_data']['component cost']/sfa["best_area"])/(sfa["threshold_zero"]-sfa["threshold_full"])
-            print(f"Component cost is {test['extra_data']['component cost']/sfa['best_area']} x  {sfa['best_area']}. Adjusting area score downward: {max_area_score} --> {adjusted_area_score}")
-            test["score"]=adjusted_area_score+actual_functionality_score
+            print(f"Component cost {test['extra_data']['component cost']} is {test['extra_data']['component cost']/sfa['best_area']} x  {sfa['best_area']} (best).")
+            print(f"Adjusting base area score downward: {max_area_score} --> {adjusted_area_score}.")
+            print(f"Scaling area score by x{area_score_scalefactor} based on functionality.")
+            print(f"Further adjusting area score downwards: {adjusted_area_score} --> {adjusted_area_score*area_score_scalefactor}")
+            test["score"]=actual_functionality_score+adjusted_area_score*area_score_scalefactor
         else:
-            print(f"Component cost is <= {sfa['threshold_full']} x {sfa['best_area']}. Full score of {max_area_score} given for area.")
-            test["score"]=max_area_score+actual_functionality_score
+            print(f"Component cost {test['extra_data']['component cost']} is <= {sfa['threshold_full']} x {sfa['best_area']} (best). Full score of {max_area_score} given for area.")
+            print(f"Base area score set to maximum: {max_area_score}.")
+            print(f"Scaling base area score by x{area_score_scalefactor} based on functionality.")
+            print(f"Adjusting area score downwards: {max_area_score} --> {max_area_score*area_score_scalefactor}")
+            test["score"]=actual_functionality_score+max_area_score*area_score_scalefactor
         test["score"] = min(max(0,test["score"]),test["max_score"])
+        print(f"Net score before penalties is {test['score']}")
         return test["score"]
