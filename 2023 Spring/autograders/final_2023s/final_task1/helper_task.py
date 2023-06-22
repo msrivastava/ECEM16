@@ -123,10 +123,10 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         test["score"] = 0
         return 0
     elif state["jobs_completed"]==0:
-        print(f"Raw functionality score = 0 as no DOUT was produced / no DONE=1 was received.")
+        print(f"Raw functionality score = 0 as no DIST was produced / no DONE=1 was received.")
         test["score"] = 0
         return 0
-    elif state['errrec']['protocol']>0 and state['correct_dout']==0:
+    elif state['errrec']['protocol']>0 and state['correct_dist']==0:
         print(f"Raw functionality score = 0 as there were protocol errors and no valid data output was produced.")
         test["score"] = 0
         return 0
@@ -139,10 +139,10 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
 
         fraction_jobs_done = min(1,(state['jobs_completed']+state['resets_done'])/state['jobs_arrived'])
         print(f"DUT finished {round(100*fraction_jobs_done,2)}% of the jobs that arrive.")
-        fraction_good_dout = state['correct_dout']/state['total_dout'] if state['total_dout']>0 else 0
-        print(f"DUT computed correctly outputs on {round(100*fraction_good_dout,2)}% of the jobs it completed.")
+        fraction_good_dist = state['correct_dist']/state['total_dist'] if state['total_dist']>0 else 0
+        print(f"DUT computed correctly outputs on {round(100*fraction_good_dist,2)}% of the jobs it completed.")
 
-        has_functionality_error = has_bad_clocks or (fraction_jobs_done<1) or (fraction_good_dout<1)
+        has_functionality_error = has_bad_clocks or (fraction_jobs_done<1) or (fraction_good_dist<1)
 
         if (1-fraction_good_clocks)>p['valid_design_max_percent_failed_tests']/100.0 and test['extra_data']['# of components']<p['valid_design_min_component_count']:
             print(f"\nThis design seems to be bogus or frivolous: it has {test['extra_data']['# of components']} components and has errors on {100*(1-fraction_good_clocks)}% of the clock ticks tested.")
@@ -151,14 +151,14 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
             return test["score"]
         if has_functionality_error:
             max_badclockticks_allowed = state['t_max']*round(float(p['percent_failed_tests_for_zero_score'])/100)
-            max_badoutputs_allowed = state['total_dout']*round(float(p['percent_failed_tests_for_zero_score'])/100)
+            max_badoutputs_allowed = state['total_dist']*round(float(p['percent_failed_tests_for_zero_score'])/100)
             print(f"Errors carry minimum penalty of {float(p['minimum_penalty_percent'])}% and result in zero score upon failures at {float(p['percent_failed_tests_for_zero_score'])}% of tests.")
             print(f"Maximum # of clock ticks with problems allowed = {max_badclockticks_allowed}")
             print(f"Maximum # of computation jobs with problems allowed = {max_badoutputs_allowed}")
-            if state['errrec']['badclockticks']>max_badclockticks_allowed or (state['total_dout']-state['correct_dout'])>max_badoutputs_allowed:
+            if state['errrec']['badclockticks']>max_badclockticks_allowed or (state['total_dist']-state['correct_dist'])>max_badoutputs_allowed:
                 if state['errrec']['badclockticks']>max_badclockticks_allowed:
                     print("Too many clock ticks with problems.")
-                if (state['total_dout']-state['correct_dout'])>max_badoutputs_allowed:
+                if (state['total_dist']-state['correct_dist'])>max_badoutputs_allowed:
                     print("Too many jobs with bad output values.")
                 actual_functionality_score = 0
             else:
@@ -166,12 +166,12 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
                 delta1 = actual_functionality_score/(max_badclockticks_allowed-1)
                 actual_functionality_score1 = max(0,actual_functionality_score-delta1*(state['errrec']['badclockticks']-1))
                 delta2 = actual_functionality_score/(max_badoutputs_allowed-1)
-                actual_functionality_score2 = max(0,actual_functionality_score-delta2*((state['total_dout']-state['correct_dout'])-1))
+                actual_functionality_score2 = max(0,actual_functionality_score-delta2*((state['total_dist']-state['correct_dist'])-1))
                 actual_functionality_score = min(actual_functionality_score1,actual_functionality_score2)
         else:
             actual_functionality_score = max_functionality_score
         print(f"Functionality score = {actual_functionality_score}.")
-        #actual_functionality_score = max_functionality_score*min(fraction_good_clocks,(0.25*fraction_jobs_done+0.75*fraction_good_dout))
+        #actual_functionality_score = max_functionality_score*min(fraction_good_clocks,(0.25*fraction_jobs_done+0.75*fraction_good_dist))
         sfa = p["tester"]["scoring_func_args"] if ("tester" in p and "scoring_func_args" in p["tester"]) else None
         prorate_area_score = p.get("prorate_area_score",False)
         if prorate_area_score:
@@ -181,7 +181,7 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         if has_functionality_error:
             if prorate_area_score:
                 #area_score_scalefactor = fraction_good_clocks
-                area_score_scalefactor = min(fraction_good_clocks,fraction_good_dout)
+                area_score_scalefactor = min(fraction_good_clocks,fraction_good_dist)
                 print(f"Design has at least one functionality error. Base area score will be multiplied by x{area_score_scalefactor}.")
             else:
                 area_score_scalefactor = 0
