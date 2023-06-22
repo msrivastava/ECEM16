@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project source="3.8.0" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.8.0(https://github.com/logisim-evolution/).
+
+  <lib desc="#Wiring" name="0">
+    <tool name="Pin">
+      <a name="appearance" val="classic"/>
+    </tool>
+  </lib>
+  <lib desc="#Gates" name="1"/>
+  <lib desc="#Plexers" name="2"/>
+  <lib desc="#Arithmetic" name="3"/>
+  <lib desc="#Memory" name="4"/>
+  <lib desc="#I/O" name="5"/>
+  <lib desc="#TTL" name="6"/>
+  <lib desc="#TCL" name="7"/>
+  <lib desc="#Base" name="8">
+    <tool name="Text Tool">
+      <a name="font" val="SansSerif plain 12"/>
+    </tool>
+  </lib>
+  <lib desc="#BFH-Praktika" name="9"/>
+  <lib desc="#Input/Output-Extra" name="10"/>
+  <lib desc="#Soc" name="11"/>
+  <lib desc="file#M16 Components.circ" name="12"/>
+  <main name="DUT"/>
+  <options>
+    <a name="gateUndefined" val="ignore"/>
+    <a name="simlimit" val="1000"/>
+    <a name="simrand" val="0"/>
+  </options>
+  <mappings>
+    <tool lib="8" map="Button2" name="Menu Tool"/>
+    <tool lib="8" map="Button3" name="Menu Tool"/>
+    <tool lib="8" map="Ctrl Button1" name="Menu Tool"/>
+  </mappings>
+  <toolbar>
+    <tool lib="8" name="Poke Tool"/>
+    <tool lib="8" name="Edit Tool"/>
+    <tool lib="8" name="Text Tool">
+      <a name="font" val="SansSerif plain 12"/>
+    </tool>
+    <sep/>
+    <tool lib="0" name="Pin"/>
+    <tool lib="0" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+    </tool>
+    <tool lib="1" name="NOT Gate"/>
+    <tool lib="1" name="AND Gate"/>
+    <tool lib="1" name="OR Gate"/>
+  </toolbar>
+  <circuit name="DUT">
+    <a name="appearance" val="logisim_evolution"/>
+    <a name="circuit" val="DUT"/>
+    <a name="simulationFrequency" val="4.0"/>
+    <comp lib="0" loc="(100,110)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="X1"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(100,140)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="Y1"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(100,170)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="X2"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(100,200)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="Y2"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(100,230)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="GO1"/>
+    </comp>
+    <comp lib="0" loc="(100,260)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="GO2"/>
+    </comp>
+    <comp lib="0" loc="(100,290)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="0" loc="(100,320)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="RST"/>
+    </comp>
+    <comp lib="0" loc="(750,110)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="DIST"/>
+      <a name="output" val="true"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="12"/>
+    </comp>
+    <comp lib="0" loc="(750,140)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="DONE"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="8" loc="(415,15)" name="Text">
+      <a name="font" val="SansSerif bold 12"/>
+      <a name="text" val="Please put your design below. You may also use subcircuits."/>
+    </comp>
+    <comp lib="8" loc="(415,35)" name="Text">
+      <a name="font" val="SansSerif bold 12"/>
+      <a name="text" val="However, do not move, rename, add, or delete any pins."/>
+    </comp>
+    <wire from="(100,110)" to="(160,110)"/>
+    <wire from="(100,140)" to="(160,140)"/>
+    <wire from="(100,170)" to="(160,170)"/>
+    <wire from="(100,200)" to="(160,200)"/>
+    <wire from="(100,230)" to="(160,230)"/>
+    <wire from="(100,260)" to="(160,260)"/>
+    <wire from="(100,290)" to="(160,290)"/>
+    <wire from="(100,320)" to="(160,320)"/>
+    <wire from="(680,110)" to="(750,110)"/>
+    <wire from="(680,140)" to="(750,140)"/>
+  </circuit>
+  <circuit name="TB">
+    <a name="appearance" val="logisim_evolution"/>
+    <a name="circuit" val="TB"/>
+    <a name="simulationFrequency" val="4.0"/>
+    <comp lib="0" loc="(220,320)" name="Clock">
+      <a name="label" val="sysclk"/>
+    </comp>
+    <comp lib="0" loc="(290,200)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="X1"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(290,220)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="Y1"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(290,240)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="X2"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(290,260)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="Y2"/>
+      <a name="radix" val="16"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(290,280)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="GO1"/>
+    </comp>
+    <comp lib="0" loc="(290,300)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="GO2"/>
+    </comp>
+    <comp lib="0" loc="(290,320)" name="Clock">
+      <a name="highDuration" val="2"/>
+      <a name="label" val="clk"/>
+      <a name="lowDuration" val="2"/>
+    </comp>
+    <comp lib="0" loc="(290,350)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="RST"/>
+    </comp>
+    <comp lib="0" loc="(500,200)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="DIST"/>
+      <a name="output" val="true"/>
+      <a name="radix" val="10unsigned"/>
+      <a name="width" val="12"/>
+    </comp>
+    <comp lib="0" loc="(500,220)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="DONE"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="1" loc="(350,340)" name="OR Gate">
+      <a name="size" val="30"/>
+    </comp>
+    <comp lib="5" loc="(230,420)" name="Button">
+      <a name="label" val="RESET"/>
+    </comp>
+    <comp lib="8" loc="(325,45)" name="Text">
+      <a name="font" val="SansSerif bold 12"/>
+      <a name="text" val="DO NOT MODIFY THIS"/>
+    </comp>
+    <comp lib="8" loc="(350,75)" name="Text">
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="text" val="YOU MAY TEST YOUR CIRCUITS USING THIS TO MAKE SURE YOU HAVE NOT ALTERED PIN OUT"/>
+    </comp>
+    <comp loc="(460,200)" name="DUT"/>
+    <wire from="(230,420)" to="(300,420)"/>
+    <wire from="(290,200)" to="(350,200)"/>
+    <wire from="(290,220)" to="(350,220)"/>
+    <wire from="(290,240)" to="(350,240)"/>
+    <wire from="(290,260)" to="(350,260)"/>
+    <wire from="(290,280)" to="(350,280)"/>
+    <wire from="(290,300)" to="(350,300)"/>
+    <wire from="(290,320)" to="(350,320)"/>
+    <wire from="(290,350)" to="(320,350)"/>
+    <wire from="(300,330)" to="(300,420)"/>
+    <wire from="(300,330)" to="(320,330)"/>
+    <wire from="(460,200)" to="(500,200)"/>
+    <wire from="(460,220)" to="(500,220)"/>
+  </circuit>
+</project>
