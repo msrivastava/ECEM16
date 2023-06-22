@@ -1,5 +1,5 @@
 {
-	"mode": "production.submission.checking",
+	"mode": "production.grading",
 	"test_user_emails": [
 		"mbs@ee.ucla.edu"
 	],
