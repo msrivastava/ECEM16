@@ -83,12 +83,11 @@ def check_protocol_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None
         return False
     return True
 
-def verify_distance_computation(X1,Y1,X2,Y2,DIST):
+def verify_distance_computation(X1,Y1,X2,Y2,DISTx8_COMPUTED):
     DISTSQ_ACTUAL = (X1-X2)**2+(Y1-Y2)**2
     DISTx8_ACTUAL = int(8*math.sqrt(DISTSQ_ACTUAL))
-    DISTx8_OBSERVED = DIST**2
-    print(f"DISTx8_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL}, DISTx8_OBSERVED={DIST}^2={DISTx8_OBSERVED}")
-    return DISTx8_ACTUAL==DISTx8_OBSERVED
+    print(f"DIST_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL/8}, DIST_COMPUTED={DISTx8_COMPUTED/8}")
+    return DISTx8_ACTUAL==DISTx8_COMPUTED
 
 def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     errrec = state["errrec"]
