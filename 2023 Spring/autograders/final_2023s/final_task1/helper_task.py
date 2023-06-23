@@ -86,8 +86,12 @@ def check_protocol_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None
 def verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8_COMPUTED):
     DISTSQ_ACTUAL = (X1-X2)**2+(Y1-Y2)**2
     DISTx8_ACTUAL = int(8*math.sqrt(DISTSQ_ACTUAL))
-    print(f"t={t}: DIST_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL/8}, DIST_COMPUTED={DISTx8_COMPUTED/8}")
-    return DISTx8_ACTUAL==DISTx8_COMPUTED
+    #print(f"t={t}: DIST_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL/8}, DIST_COMPUTED={DISTx8_COMPUTED/8}")
+    if DISTx8_ACTUAL==DISTx8_COMPUTED:
+        return True
+    else:
+        print(f"Incorrect output @ t={t}: distance(({X1},{Y1}),({X2},{Y2})) should be {DISTx8_ACTUAL/8} but got {DISTx8_COMPUTED/8}")
+        return False
 
 def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     errrec = state["errrec"]
@@ -104,7 +108,6 @@ def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=
             assert verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8)
             state["correct_dist"] += 1
         except:
-            print(f"Incorrect output @ t={t} distance(({X1},{Y1}),({X2},{Y2}))={DIST/8}")
             errrec['total'] = errrec.get('total',0)+1
             errrec[errtype] = errrec.get(errtype,0)+1
             return False
