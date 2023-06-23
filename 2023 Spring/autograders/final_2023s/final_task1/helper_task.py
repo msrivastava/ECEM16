@@ -136,7 +136,7 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         return 0
     else:
         max_functionality_score = p['max_functionality_score']
-        max_area_score = p['max_area_score']
+        max_quality_score = p['max_quality_score']
         fraction_good_clocks = 1-state['errrec']['badclockticks']/state['t_max']
         has_bad_clocks = True if state['errrec']['badclockticks']>0 else False
         print(f"DUT worked incorrectly on {round(100*(1-fraction_good_clocks),2)}% of the clock edges ({state['errrec']['badclockticks']} out of {state['t_max']}).")
@@ -150,7 +150,7 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
 
         if (1-fraction_good_clocks)>p['valid_design_max_percent_failed_tests']/100.0 and test['extra_data']['# of components']<p['valid_design_min_component_count']:
             print(f"\nThis design seems to be bogus or frivolous: it has {test['extra_data']['# of components']} components and has errors on {100*(1-fraction_good_clocks)}% of the clock ticks tested.")
-            print(f"Zero functionality and area scores.")
+            print(f"Zero functionality and quality scores.")
             test["score"]=0
             return test["score"]
         if has_functionality_error:
@@ -177,44 +177,63 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         print(f"Functionality score = {actual_functionality_score}.")
         #actual_functionality_score = max_functionality_score*min(fraction_good_clocks,(0.25*fraction_jobs_done+0.75*fraction_good_dist))
         sfa = p["tester"]["scoring_func_args"] if ("tester" in p and "scoring_func_args" in p["tester"]) else None
-        prorate_area_score = p.get("prorate_area_score",False)
-        if prorate_area_score:
-            print("Area score is being prorated for functionality.")
+        prorate_quality_score = p.get("prorate_quality_score",False)
+        if prorate_quality_score:
+            print("Quality score is being prorated for functionality.")
         else:
-            print("Area score is not being prorated for functionality: zero score for area in case of any functionality error.")
+            print("Quality score is not being prorated for functionality: zero score for quality in case of any functionality error.")
         if has_functionality_error:
-            if prorate_area_score:
-                #area_score_scalefactor = fraction_good_clocks
-                area_score_scalefactor = min(fraction_good_clocks,fraction_good_dist)
-                print(f"Design has at least one functionality error. Base area score will be multiplied by x{area_score_scalefactor}.")
+            if prorate_quality_score:
+                #quality_score_scalefactor = fraction_good_clocks
+                quality_score_scalefactor = min(fraction_good_clocks,fraction_good_dist)
+                print(f"Design has at least one functionality error. Base quality score will be multiplied by x{quality_score_scalefactor}.")
             else:
-                area_score_scalefactor = 0
-                print(f"Design has functionality errors. Setting area score to 0.")
+                quality_score_scalefactor = 0
+                print(f"Design has functionality errors. Setting quality score to 0.")
         else:
-            area_score_scalefactor = 1
-            print(f"Design has no functionality errors detected. Base area scare will not be derated.")
-        if not sfa or not isinstance(sfa,dict) or not set(["best_area", "threshold_full", "threshold_zero"]).issubset(sfa.keys()):
-            print("Warning: did not find proper 'scoring_func_args' to grade area-optimized task. Please report to developers. Setting score to 0.")
+            quality_score_scalefactor = 1
+            print(f"Design has no functionality errors detected. Base quality scare will not be derated.")
+        if not sfa or not isinstance(sfa,dict) or not set(["best_quality", "thresholds"]).issubset(sfa.keys()):
+            print("Warning: did not find proper 'scoring_func_args' to grade quality-optimized task. Please report to developers. Setting score to 0.")
             test["score"]=actual_functionality_score
-        elif not all(is_numeric(sfa[k]) for k in ["best_area", "threshold_full", "threshold_zero"]) or (sfa["threshold_zero"] <= sfa["threshold_full"]):
-            print(f"Warning: 'scoring_func_args' are invalid: {sfa}. Please report to developers. Setting area score to 0.")
+        elif not is_numeric(sfa["best_quality"]): 
+            print(f"Warning: invalid scoring_func_args['best_quality']: {sfa}. Please report to developers. Setting quality score to 0.")
             test["score"]=actual_functionality_score
-        elif test['extra_data']['component cost']/sfa["best_area"] > sfa["threshold_zero"]:
-            print(f"Component cost {test['extra_data']['component cost']} is way too high (> {sfa['threshold_zero']} x {sfa['best_area']}): Setting score to 0.")
+        elif not (isinstance(sfa["thresholds"],list) and all(isinstance(e,list) and (len(e)==2) and is_numeric(e[0]) and is_numeric(e[1]) for e in sfa["thresholds"])):
+            print(f"Warning: invalid scoring_func_args['thresholds']: {sfa}. Please report to developers. Setting quality score to 0.")
             test["score"]=actual_functionality_score
-        elif test['extra_data']['component cost']/sfa["best_area"] > sfa["threshold_full"]:
-            adjusted_area_score = max_area_score*(sfa["threshold_zero"]-test['extra_data']['component cost']/sfa["best_area"])/(sfa["threshold_zero"]-sfa["threshold_full"])
-            print(f"Component cost {test['extra_data']['component cost']} is {test['extra_data']['component cost']/sfa['best_area']} x  {sfa['best_area']} (best).")
-            print(f"Adjusting base area score downward: {max_area_score} --> {adjusted_area_score}.")
-            print(f"Scaling area score by x{area_score_scalefactor} based on functionality.")
-            print(f"Further adjusting area score downwards: {adjusted_area_score} --> {adjusted_area_score*area_score_scalefactor}")
-            test["score"]=actual_functionality_score+adjusted_area_score*area_score_scalefactor
         else:
-            print(f"Component cost {test['extra_data']['component cost']} is <= {sfa['threshold_full']} x {sfa['best_area']} (best). Full score of {max_area_score} given for area.")
-            print(f"Base area score set to maximum: {max_area_score}.")
-            print(f"Scaling base area score by x{area_score_scalefactor} based on functionality.")
-            print(f"Adjusting area score downwards: {max_area_score} --> {max_area_score*area_score_scalefactor}")
-            test["score"]=actual_functionality_score+max_area_score*area_score_scalefactor
+            best_quality = sfa["best_quality"]
+            delay_stats = runtimestats_func(p,state,min_samples=20)
+            if delay_stats:
+                median_delay = delay_stats[1]
+                output_msg = f"Median delay = {median_delay}"
+                print(output_msg)
+                quality = test['extra_data']['component cost'] * median_delay
+                quality_ratio = quality/best_quality
+                output_msg = f"Raw Area x Delay = {quality} [best = {best_quality}, ratio = {quality_ratio}]"
+                print(output_msg)
+                test["output"].append(output_msg)
+                thresholds = sfa["thresholds"]
+                thresholds.sort(key=lambda e: e[0])
+                if thresholds[0][0] != 0:
+                    thresholds = [[0,1]]+thresholds
+                if quality_ratio>thresholds[-1][0]:
+                    quality_score_factor = 0
+                else:
+                    i=0
+                    while quality_ratio>thresholds[i+1][0]:
+                        i += 1
+                    x1 = thresholds[i][0]
+                    x2 = thresholds[i+1][0]
+                    y1 = thresholds[i][1]
+                    y2 = thresholds[i+1][1]
+                    quality_score_factor = y1+((y2-y1)/(x2-x1))*(quality_ratio-x1)
+                print(f"Base Quality Score is {max_quality_score} x {quality_score_factor}")
+                print(f"Base Quality Score is further scaled by x{quality_score_scalefactor} based on functionality.")
+                quality_score = quality_score_scalefactor * quality_score_factor * max_quality_score
+                print(f"Final Quality Score = {quality_score}.")
+                test["score"]=actual_functionality_score+quality_score
         test["score"] = min(max(0,test["score"]),test["max_score"])
         print(f"Net score before penalties is {test['score']}")
         return test["score"]
