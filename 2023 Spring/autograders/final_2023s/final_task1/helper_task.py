@@ -24,7 +24,7 @@ def runtimestats_func(p,state):
 
 def gsheetstats_func(p,state,total_errors,has_fatal_error):
     part1 = [total_errors,(1 if has_fatal_error else 0)]
-    part2 = runtimestats_task3(p,state)
+    part2 = runtimestats_func(p,state)
     if not part2 or has_fatal_error:
         part2 = ["",""]
     return part1+part2
@@ -83,10 +83,10 @@ def check_protocol_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None
         return False
     return True
 
-def verify_distance_computation(X1,Y1,X2,Y2,DISTx8_COMPUTED):
+def verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8_COMPUTED):
     DISTSQ_ACTUAL = (X1-X2)**2+(Y1-Y2)**2
     DISTx8_ACTUAL = int(8*math.sqrt(DISTSQ_ACTUAL))
-    print(f"DIST_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL/8}, DIST_COMPUTED={DISTx8_COMPUTED/8}")
+    print(f"t={t}: DIST_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL/8}, DIST_COMPUTED={DISTx8_COMPUTED/8}")
     return DISTx8_ACTUAL==DISTx8_COMPUTED
 
 def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
@@ -99,8 +99,9 @@ def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=
             Y1 = twos(signextend(state['Y1'],4),4)
             X2 = twos(signextend(state['X2'],4),4)
             Y2 = twos(signextend(state['Y2'],4),4)
-            DIST = twos(signextend(sigrec['DIST']['val'],4),4)
-            assert verify_distance_computation(X1,Y1,X2,Y2,DIST)
+            #DIST = twos(signextend(sigrec['DIST']['val'],4),4)
+            DISTx8 = int(sigrec['DIST']['val'],2)
+            assert verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8)
             state["correct_dist"] += 1
         except:
             print(f"Incorrect output @ t={t} distance(({X1},{Y1}),({X2},{Y2}))={DIST/8}")
