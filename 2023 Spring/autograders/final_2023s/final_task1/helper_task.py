@@ -211,7 +211,7 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
                 print(output_msg)
                 quality = test['extra_data']['component cost'] * median_delay
                 quality_ratio = quality/best_quality
-                output_msg = f"Raw Area x Delay = {quality} [best = {best_quality}, ratio = {quality_ratio}]"
+                output_msg = f"Raw Quality (Area x Delay) = {quality} [best = {best_quality}, ratio = {quality_ratio}]"
                 print(output_msg)
                 test["output"].append(output_msg)
                 thresholds = sfa["thresholds"]
