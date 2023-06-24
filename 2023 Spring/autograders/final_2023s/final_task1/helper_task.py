@@ -16,15 +16,21 @@ def validate_effort_func(p,state):
     f4 = (state["correct_dist"]>1)
     return f1 and f2 and f3 and f4
 
-def runtimestats_func(p,state):
-    if len(state["execution_times"])>1:
-        return [statistics.mean(state["execution_times"]),statistics.median(state["execution_times"])]
+def runtimestats_func(p,state,min_samples=1,strict=False,silent=True):
+    #if len(state["execution_times"])>1:
+    #    return [statistics.mean(state["execution_times"]),statistics.median(state["execution_times"])]
+    #else:
+    #    return ["",""]
+    if strict and state["errrec"]['dist_value']>0:
+        return None
+    if len(state['execution_times'])>=min_samples:
+        return [statistics.mean(state['execution_times']),statistics.median(state['execution_times'])]
     else:
-        return ["",""]
+        return None
 
 def gsheetstats_func(p,state,total_errors,has_fatal_error):
     part1 = [total_errors,(1 if has_fatal_error else 0)]
-    part2 = runtimestats_func(p,state)
+    part2 = runtimestats_func(p,state,min_samples=20)
     if not part2 or has_fatal_error:
         part2 = ["",""]
     return part1+part2
@@ -234,6 +240,9 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
                 quality_score = quality_score_scalefactor * quality_score_factor * max_quality_score
                 print(f"Final Quality Score = {quality_score}.")
                 test["score"]=actual_functionality_score+quality_score
+            else:
+                pring(f"No credit for Quality (Area x Delay) due to insufficiently functional design with sufficient # of samples to compute meaningful delay.")
+                test["score"]=actual_functionality_score
         test["score"] = min(max(0,test["score"]),test["max_score"])
         print(f"Net score before penalties is {test['score']}")
         return test["score"]
