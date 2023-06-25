@@ -149,8 +149,8 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         test["score"] = 0
         return 0
     else:
-        if state['jobs_arrived']<5:
-            print(f"DUT accepted {state['jobs_arrived']} jobs in {state['t_max']} clocks, which is way too low for a properly functioning system.")
+        if state['jobs_completed']<p.get("min_job_count",5):
+            print(f"DUT completed only {state['jobs_completed']} jobs in {state['t_max']} clocks, which is way too low for a properly functioning system.")
             print(f"Zero functionality and quality scores.")
             return test["score"]
         max_functionality_score = p['max_functionality_score']

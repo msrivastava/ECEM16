@@ -49,6 +49,7 @@
 			"valid_design_min_component_count":15,
 			"valid_design_max_percent_failed_tests":25,
 			"prorate_quality_score": "True",
+			"min_job_count": 5,
 			"inputs": [
 				{"name":"X1", "base":2, "length":8},
 				{"name":"Y1", "base":2, "length":8},
