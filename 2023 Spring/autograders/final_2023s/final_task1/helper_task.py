@@ -67,7 +67,6 @@ def stateupdate_func(state,t,sigrec):
             X2 = twos(signextend(state['X2'],4),4)
             Y2 = twos(signextend(state['Y2'],4),4)
             DIST = int(sigrec['DIST']['val'],2)/8.0
-            state["jobs_details"].append([t,(X1,Y1),(X2,Y2),DIST])
             if len(state["t_arrivals"])>0:
                 state["execution_times"].append(t-state["t_arrivals"][-1])
             else:
