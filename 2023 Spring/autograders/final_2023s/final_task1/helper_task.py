@@ -102,6 +102,7 @@ def verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8_COMPUTED):
     DISTx8_ACTUAL = int(8*math.sqrt(DISTSQ_ACTUAL))
     #print(f"t={t}: DIST_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL/8}, DIST_COMPUTED={DISTx8_COMPUTED/8}")
     if DISTx8_ACTUAL==DISTx8_COMPUTED:
+        print(f"Crrect output @ t={t}: distance(({X1},{Y1}),({X2},{Y2})) = {DISTx8_COMPUTED/8}")
         return True
     else:
         print(f"Incorrect output @ t={t}: distance(({X1},{Y1}),({X2},{Y2})) should be {DISTx8_ACTUAL/8} but got {DISTx8_COMPUTED/8}")
