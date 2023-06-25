@@ -241,7 +241,7 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
                 print(f"Final Quality Score = {quality_score}.")
                 test["score"]=actual_functionality_score+quality_score
             else:
-                pring(f"No credit for Quality (Area x Delay) due to insufficiently functional design with sufficient # of samples to compute meaningful delay.")
+                print(f"No credit for Quality (Area x Delay) due to insufficiently functional design with sufficient # of samples to compute meaningful delay.")
                 test["score"]=actual_functionality_score
         test["score"] = min(max(0,test["score"]),test["max_score"])
         print(f"Net score before penalties is {test['score']}")
