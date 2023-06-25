@@ -46,7 +46,7 @@
 			"percent_penalty_invalid_component":100,
 			"percent_penalty_total_component_count":100,
 			"percent_penalty_individual_component_count":100,
-			"min_score_percent_for_decent_effort":15,
+			"min_score_percent_for_decent_effort":25,
 			"valid_design_min_component_count":15,
 			"valid_design_max_percent_failed_tests":25,
 			"prorate_quality_score": "True",
