@@ -14,7 +14,8 @@ def validate_effort_func(p,state):
     f2 = (p["# components"]>50)
     f3 = (state['errrec']['nonbinary']<0.8*state['ticks'])
     f4 = (state["correct_dist"]>1)
-    return f1 and f2 and f3 and f4
+    f5 = (state["total_dist"]>=state["resets_done"])
+    return f1 and f2 and f3 and (f4 or f5)
 
 def runtimestats_func(p,state,min_samples=1,strict=False,silent=True):
     #if len(state["execution_times"])>1:
