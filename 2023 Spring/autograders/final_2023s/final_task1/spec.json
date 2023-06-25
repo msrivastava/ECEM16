@@ -156,7 +156,7 @@
 						"enabled": "True",
 						"is_fatal":0,
 						"errtype":"nonbinary", 
-						"description":"Non binary signal DONE and/or DIST"},
+						"description":"One or more binary bits observed in signals DONE and/or DIST"},
 					{"func":"check_signals_at_reset", 
 						"enabled": "True",
 						"is_fatal":0,
