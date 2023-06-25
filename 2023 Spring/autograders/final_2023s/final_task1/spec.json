@@ -107,8 +107,8 @@
 			},
 			"tester": {
 				"enabled": "True",
-				"t_max_simulate": 65536,
-				"t_max_test": 8000,
+				"t_max_simulate": 262144,
+				"t_max_test": 65536,
 				"t_max_print": 1600,
 				"stateupdate_func": "stateupdate_func",
 				"runtimestats_func": "runtimestats_func",

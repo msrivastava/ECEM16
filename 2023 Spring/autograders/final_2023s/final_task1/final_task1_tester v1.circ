@@ -37,8 +37,8 @@
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#final_task1.circ" name="12"/>
-  <lib desc="file#M16 Components.circ" name="13"/>
+  <lib desc="file#M16 Components.circ" name="12"/>
+  <lib desc="file#final_task1.circ" name="13"/>
   <main name="Tester"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -82,7 +82,7 @@
       <a name="label" val="CYCLE"/>
       <a name="output" val="true"/>
       <a name="radix" val="16"/>
-      <a name="width" val="18"/>
+      <a name="width" val="16"/>
     </comp>
     <comp lib="0" loc="(1090,130)" name="Pin">
       <a name="appearance" val="classic"/>
@@ -186,19 +186,19 @@
       <a name="radix" val="16"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="0" loc="(130,100)" name="Constant">
-      <a name="value" val="0x8"/>
+    <comp lib="0" loc="(180,180)" name="Constant">
+      <a name="value" val="0x40"/>
       <a name="width" val="13"/>
     </comp>
-    <comp lib="0" loc="(130,40)" name="Constant">
-      <a name="value" val="0x2000"/>
-      <a name="width" val="16"/>
+    <comp lib="0" loc="(180,200)" name="Constant">
+      <a name="value" val="0x100"/>
+      <a name="width" val="13"/>
     </comp>
-    <comp lib="0" loc="(130,60)" name="Constant">
-      <a name="value" val="0xfffe"/>
-      <a name="width" val="16"/>
+    <comp lib="0" loc="(180,220)" name="Constant">
+      <a name="width" val="13"/>
     </comp>
-    <comp lib="0" loc="(130,80)" name="Constant">
+    <comp lib="0" loc="(180,240)" name="Constant">
+      <a name="value" val="0x8"/>
       <a name="width" val="13"/>
     </comp>
     <comp lib="0" loc="(230,1260)" name="Constant">
@@ -280,11 +280,11 @@
     <comp lib="1" loc="(920,1060)" name="NOT Gate"/>
     <comp lib="1" loc="(920,1130)" name="NOT Gate"/>
     <comp lib="1" loc="(920,1270)" name="NOT Gate"/>
-    <comp lib="12" loc="(730,310)" name="DUT"/>
-    <comp lib="13" loc="(350,20)" name="SysRunnerL"/>
-    <comp lib="13" loc="(670,750)" name="GenPulseAtNegEdge"/>
-    <comp lib="13" loc="(770,1020)" name="GenPulseAtNegEdge"/>
-    <comp lib="13" loc="(770,1230)" name="GenPulseAtNegEdge"/>
+    <comp lib="12" loc="(300,160)" name="SysRunner"/>
+    <comp lib="12" loc="(670,750)" name="GenPulseAtNegEdge"/>
+    <comp lib="12" loc="(770,1020)" name="GenPulseAtNegEdge"/>
+    <comp lib="12" loc="(770,1230)" name="GenPulseAtNegEdge"/>
+    <comp lib="13" loc="(730,310)" name="DUT"/>
     <comp lib="2" loc="(280,1180)" name="Multiplexer">
       <a name="width" val="4"/>
     </comp>
@@ -315,8 +315,8 @@
     </comp>
     <comp lib="4" loc="(130,320)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
-      <a name="max" val="0x3ffff"/>
-      <a name="width" val="18"/>
+      <a name="max" val="0xffff"/>
+      <a name="width" val="16"/>
     </comp>
     <comp lib="4" loc="(340,1200)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
@@ -364,6 +364,7 @@
     <wire from="(110,1280)" to="(340,1280)"/>
     <wire from="(110,1350)" to="(130,1350)"/>
     <wire from="(110,160)" to="(110,230)"/>
+    <wire from="(110,160)" to="(180,160)"/>
     <wire from="(110,230)" to="(110,300)"/>
     <wire from="(110,300)" to="(110,400)"/>
     <wire from="(110,300)" to="(480,300)"/>
@@ -403,16 +404,14 @@
     <wire from="(300,1310)" to="(300,1390)"/>
     <wire from="(300,1310)" to="(340,1310)"/>
     <wire from="(300,1430)" to="(300,1460)"/>
+    <wire from="(300,160)" to="(450,160)"/>
     <wire from="(310,1020)" to="(310,1230)"/>
     <wire from="(310,1020)" to="(340,1020)"/>
     <wire from="(310,1230)" to="(340,1230)"/>
     <wire from="(310,970)" to="(310,1020)"/>
     <wire from="(310,970)" to="(660,970)"/>
-    <wire from="(330,370)" to="(340,370)"/>
-    <wire from="(340,370)" to="(360,370)"/>
-    <wire from="(340,430)" to="(370,430)"/>
-    <wire from="(350,160)" to="(450,160)"/>
-    <wire from="(350,20)" to="(350,160)"/>
+    <wire from="(330,370)" to="(360,370)"/>
+    <wire from="(330,430)" to="(370,430)"/>
     <wire from="(360,60)" to="(1090,60)"/>
     <wire from="(360,60)" to="(360,370)"/>
     <wire from="(370,100)" to="(1070,100)"/>
@@ -524,9 +523,6 @@
     <wire from="(840,740)" to="(900,740)"/>
     <wire from="(850,1270)" to="(890,1270)"/>
     <wire from="(850,670)" to="(850,1270)"/>
-    <wire from="(90,160)" to="(110,160)"/>
-    <wire from="(90,20)" to="(130,20)"/>
-    <wire from="(90,20)" to="(90,160)"/>
     <wire from="(900,730)" to="(900,740)"/>
     <wire from="(900,800)" to="(900,810)"/>
     <wire from="(910,310)" to="(910,400)"/>
@@ -713,7 +709,7 @@
       <a name="radix" val="16"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="13" loc="(300,60)" name="GenPulseAtNegEdge"/>
+    <comp lib="12" loc="(300,60)" name="GenPulseAtNegEdge"/>
     <comp lib="4" loc="(390,60)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
       <a name="max" val="0xffff"/>
