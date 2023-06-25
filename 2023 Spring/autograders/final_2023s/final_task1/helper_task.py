@@ -13,7 +13,7 @@ def validate_effort_func(p,state):
     f1 = (state['ticks']>2)
     f2 = (p["# components"]>50)
     f3 = (state['errrec']['nonbinary']<0.8*state['ticks'])
-    f4 = (state["correct_dist"]>1)
+    f4 = (state["correct_dist"]>=1)
     f5 = (state["total_dist"]>=state["resets_done"])
     return f1 and f2 and f3 and (f4 or f5)
 
@@ -103,7 +103,7 @@ def verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8_COMPUTED):
     DISTx8_ACTUAL = int(8*math.sqrt(DISTSQ_ACTUAL))
     #print(f"t={t}: DIST_ACTUAL(({X1},{Y1}),({X2},{Y2}))={DISTx8_ACTUAL/8}, DIST_COMPUTED={DISTx8_COMPUTED/8}")
     if DISTx8_ACTUAL==DISTx8_COMPUTED:
-        print(f"Correct output @ t={t}: distance(({X1},{Y1}),({X2},{Y2})) = {DISTx8_COMPUTED/8}")
+        #print(f"Correct output @ t={t}: distance(({X1},{Y1}),({X2},{Y2})) = {DISTx8_COMPUTED/8}")
         return True
     else:
         print(f"Incorrect output @ t={t}: distance(({X1},{Y1}),({X2},{Y2})) should be {DISTx8_ACTUAL/8} but got {DISTx8_COMPUTED/8}")
@@ -123,9 +123,11 @@ def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=
             DISTx8 = int(sigrec['DIST']['val'],2)
             assert verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8)
             state["correct_dist"] += 1
+            state["jobs_details"].append([t,(X1,Y1),(X2,Y2),DISTx8/8],'OK')
         except:
             errrec['total'] = errrec.get('total',0)+1
             errrec[errtype] = errrec.get(errtype,0)+1
+            state["jobs_details"].append([t,(X1,Y1),(X2,Y2),DISTx8/8],'NO')
             return False
     return True
 
