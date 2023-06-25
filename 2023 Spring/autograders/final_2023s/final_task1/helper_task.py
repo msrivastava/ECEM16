@@ -23,7 +23,7 @@ def runtimestats_func(p,state,min_samples=1,strict=False,silent=True):
     #    return ["",""]
     if strict and state["errrec"]['dist_value']>0:
         return None
-    if len(state['execution_times'])>=min_samples:
+    if (len(state['execution_times'])>=min_samples) and all(type(e)==int or type(e)==float for e in state['execution_times']):
         return [statistics.mean(state['execution_times']),statistics.median(state['execution_times'])]
     else:
         return None
