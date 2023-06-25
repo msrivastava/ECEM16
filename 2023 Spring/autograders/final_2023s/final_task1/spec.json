@@ -136,7 +136,9 @@
 				"state": {
 					"ticks":0,
 					"runs_done":0,
+					"runs_done_details":[],
 					"resets_done":0,
+					"resets_done_details":[],
 					"jobs_arrived":0, 
 					"t_arrivals_1":[], 
 					"t_arrivals_2":[], 

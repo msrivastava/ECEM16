@@ -39,9 +39,11 @@ def stateupdate_func(state,t,sigrec):
     state['ticks'] += 1
     if sigrec['RST']['t@1']==t and sigrec['RST']['val']=='0' and sigrec['RST']['val@2']=='1' and sigrec['RST']['val@3']=='0':
         state['resets_done'] +=1
+        state['resets_done_details'].append(t)
         state['opcount'] = 0
     if sigrec['RST']['t@1']==t and sigrec['RST']['val']=='1' and sigrec['RST']['val@2']=='0' and sigrec['RST']['val@3']=='1':
         state['runs_done'] +=1
+        state['runs_done_details'].append(t)
     if t>0 and sigrec['RST']['val@2']=='1':
         if rising_edge('GO1',t,sigrec): 
             state["t_arrivals_1"].append(t)
@@ -147,6 +149,10 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         test["score"] = 0
         return 0
     else:
+        if state['jobs_arrived']<5:
+            print(f"DUT accepted {state['jobs_arrived']} jobs in {state['t_max']} clocks, which is way too low for a properly functioning system.")
+            print(f"Zero functionality and quality scores.")
+            return test["score"]
         max_functionality_score = p['max_functionality_score']
         max_quality_score = p['max_quality_score']
         fraction_good_clocks = 1-state['errrec']['badclockticks']/state['t_max']
@@ -154,7 +160,7 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
         print(f"DUT worked incorrectly on {round(100*(1-fraction_good_clocks),2)}% of the clock edges ({state['errrec']['badclockticks']} out of {state['t_max']}).")
 
         fraction_jobs_done = min(1,(state['jobs_completed']+state['resets_done'])/state['jobs_arrived'])
-        print(f"DUT finished {round(100*fraction_jobs_done,2)}% of the jobs that arrive.")
+        print(f"DUT finished {round(100*fraction_jobs_done,2)}% of the jobs that it accepted.")
         fraction_good_dist = state['correct_dist']/state['total_dist'] if state['total_dist']>0 else 0
         print(f"DUT computed correctly outputs on {round(100*fraction_good_dist,2)}% of the jobs it completed.")
 
@@ -226,7 +232,7 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
                 print(output_msg)
                 quality = test['extra_data']['component cost'] * median_delay
                 quality_ratio = quality/best_quality
-                output_msg = f"Raw Quality (Area x Delay) = {quality} [best = {best_quality}, ratio = {quality_ratio}]"
+                output_msg = f"Raw Quality (Area x Delay) = {quality} [best among fully correct designs = {best_quality}, ratio = {quality_ratio}]"
                 print(output_msg)
                 test["output"].append(output_msg)
                 thresholds = sfa["thresholds"]
