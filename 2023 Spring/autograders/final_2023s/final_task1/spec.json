@@ -118,7 +118,7 @@
 				"endstatevalidation_func_disabled": "validate_endstate_func",
 				"effortchecker_func": "validate_effort_func",
 				"scoring_func": "scoring_func",
-				"scoring_func_args": {"best_quality":12824, "thresholds":[[1.1,1],[2,0.5],[4,0.25],[8,0.125]]},
+				"scoring_func_args": {"best_quality":10540, "thresholds":[[1.1,1],[2,0.5],[4,0.25],[8,0.125]]},
 				"pins": [
 					{"name":"CYCLE", "length":16, "display":"udec"},
 					{"name":"RST", "length":1, "reset_sig":1, "reset_level":1},
