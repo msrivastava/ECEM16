@@ -175,8 +175,11 @@ def scoring_func(p,state,test,assertion_checks,fatal_error,fatal_error_msg,silen
                 actual_functionality_score = max_functionality_score*(1-0.01*p['minimum_penalty_percent'])
                 delta1 = actual_functionality_score/(max_badclockticks_allowed-1)
                 actual_functionality_score1 = max(0,actual_functionality_score-delta1*(state['errrec']['badclockticks']-1))
-                delta2 = actual_functionality_score/(max_badoutputs_allowed-1)
-                actual_functionality_score2 = max(0,actual_functionality_score-delta2*((state['total_dist']-state['correct_dist'])-1))
+                if max_badoutputs_allowed>1:
+                    delta2 = actual_functionality_score/(max_badoutputs_allowed-1)
+                    actual_functionality_score2 = max(0,actual_functionality_score-delta2*((state['total_dist']-state['correct_dist'])-1))
+                else:
+                    actual_functionality_score2 = 0
                 actual_functionality_score = min(actual_functionality_score1,actual_functionality_score2)
         else:
             actual_functionality_score = max_functionality_score
