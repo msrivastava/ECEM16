@@ -9,13 +9,21 @@ from digikit import *
 def validate_endstate_func(p,state,msg=[]):
     return True
 
-def validate_effort_func(p,state):
+def validate_effort_func(p,state,has_fatal_error):
     f1 = (state['ticks']>2)
     f2 = (p["# components"]>50)
     f3 = (state['errrec']['nonbinary']<0.8*state['ticks'])
     f4 = (state["correct_dist"]>=1)
     f5 = (state["total_dist"]>=state["resets_done"])
-    return f1 and f2 and f3 and (f4 or f5)
+    effort = 0
+    if f1 and f2 and f3 and (f4 or f5):
+        effort = 0.5
+        if not has_fatal_error:
+            if state['total_dist']>10*state['resets_done']:
+                effort = effort+.25
+            if tate['correct_dist']>10*state['resets_done']:
+                effort = effort+.25
+    return effort
 
 def runtimestats_func(p,state,min_samples=1,strict=False,silent=True):
     #if len(state["execution_times"])>1:
