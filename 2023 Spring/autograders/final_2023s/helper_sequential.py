@@ -12,8 +12,8 @@ def validate_endstate_func(p,state,msg=[]):
 def validate_effort_func(p,state):
     return helper_task.validate_effort_func(p,state)
 
-def runtimestats_func(p,state):
-    return helper_task.runtimestats_func(p,state)
+def runtimestats_func(p,state,has_fatal_error):
+    return helper_task.runtimestats_func(p,state,has_fatal_error)
 
 def gsheetstats_func(p,state,total_errors,has_fatal_error):
     return helper_task.gsheetstats_func(p,state,total_errors,has_fatal_error)
