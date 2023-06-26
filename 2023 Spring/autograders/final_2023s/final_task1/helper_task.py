@@ -21,7 +21,7 @@ def validate_effort_func(p,state,has_fatal_error):
         if not has_fatal_error:
             if state['total_dist']>10*state['resets_done']:
                 effort = effort+.25
-            if tate['correct_dist']>10*state['resets_done']:
+            if state['correct_dist']>10*state['resets_done']:
                 effort = effort+.25
     return effort
 
