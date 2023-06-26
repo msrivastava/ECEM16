@@ -62,11 +62,6 @@ def stateupdate_func(state,t,sigrec):
         if rising_edge('DONE',t,sigrec):
             state["t_completions"].append(t)
             state["jobs_completed"] += 1
-            X1 = twos(signextend(state['X1'],4),4)
-            Y1 = twos(signextend(state['Y1'],4),4)
-            X2 = twos(signextend(state['X2'],4),4)
-            Y2 = twos(signextend(state['Y2'],4),4)
-            DIST = int(sigrec['DIST']['val'],2)/8.0
             if len(state["t_arrivals"])>0:
                 state["execution_times"].append(t-state["t_arrivals"][-1])
             else:
