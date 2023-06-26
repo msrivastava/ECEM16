@@ -114,6 +114,7 @@ def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=
             X2 = twos(signextend(state['X2'],4),4)
             Y2 = twos(signextend(state['Y2'],4),4)
             #DIST = twos(signextend(sigrec['DIST']['val'],4),4)
+            assert isBinaryValue(sigrec['DIST']['val'])
             DISTx8 = int(sigrec['DIST']['val'],2)
             assert verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8)
             state["correct_dist"] += 1
@@ -121,7 +122,10 @@ def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=
         except:
             errrec['total'] = errrec.get('total',0)+1
             errrec[errtype] = errrec.get(errtype,0)+1
-            state["jobs_details"].append([t,(X1,Y1),(X2,Y2),DISTx8/8,'NO'])
+            if not isBinaryValue(sigrec['DIST']['val']):
+                state["jobs_details"].append([t,(X1,Y1),(X2,Y2),'U','NO'])
+            else:
+                state["jobs_details"].append([t,(X1,Y1),(X2,Y2),DISTx8/8,'NO'])
             return False
     return True
 
