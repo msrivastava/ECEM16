@@ -8,6 +8,7 @@
 	],
 	"optional_files": [
 		"final_task1.circ.out",
+		"final_task1.circ.err",
 		"final_task1_1.gv", 
 		"final_task1_2.gv",
 		"final_task1_3.gv",
