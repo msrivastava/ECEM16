@@ -25,7 +25,7 @@
 	"grader_files": [
 		{
 			"name":"M16 Components.circ", 
-			"url":"https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/final_alt_task1/M16%20Components.circ"
+			"url":"https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_alt_2023s/final_alt_task1/M16%20Components.circ"
 		},
 		{
 			"name":"final_alt_task1_tester.circ", 
