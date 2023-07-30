@@ -62,7 +62,7 @@
 				{"name":"RST", "base":2, "length":1}
 			],
 			"outputs": [
-				{"name":"DIST", "base":2, "length":16},
+				{"name":"DIST", "base":2, "length":12},
 				{"name":"ACK", "base":2, "length":1}
 			],
 			"costs": [
@@ -120,20 +120,18 @@
 				"scoring_func": "scoring_func",
 				"scoring_func_args": {"best_quality":10540, "thresholds":[[1.1,1],[2,0.5],[4,0.25],[8,0.125]]},
 				"pins": [
-					{"name":"CYCLE", "length":16, "display":"udec"},
+					{"name":"CYCLE", "length":18, "display":"udec"},
 					{"name":"RST", "length":1, "reset_sig":1, "reset_level":1},
-					{"name":"GO1", "length":1},
-					{"name":"GO2", "length":1},
-					{"name":"DONE", "length":1, "binary_check":1,  "reset_check_value":0},
+					{"name":"REQ", "length":1},
+					{"name":"ACk", "length":1, "binary_check":1,  "reset_check_value":0},
 					{"name":"X1", "length":8, "display":"sdec"},
 					{"name":"Y1", "length":8, "display":"sdec"},
 					{"name":"X2", "length":8, "display":"sdec"},
 					{"name":"Y2", "length":8, "display":"sdec"},
-					{"name":"DIST", "length":16, "display":"dec", "binary_check":1},
+					{"name":"DIST", "length":12, "display":"dec", "binary_check":1},
 					{"name":"CNTRST", "length":16, "display":"udec"},
-					{"name":"CNTGO1", "length":16, "display":"udec"},
-					{"name":"CNTGO2", "length":16, "display":"udec"},
-					{"name":"CNTDONE", "length":16, "display":"udec"}
+					{"name":"CNTREQ", "length":16, "display":"udec"},
+					{"name":"CNTACK", "length":16, "display":"udec"}
 				],
 				"state": {
 					"ticks":0,
