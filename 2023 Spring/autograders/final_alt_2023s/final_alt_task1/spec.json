@@ -1,5 +1,5 @@
 {
-	"mode": "production.grading",
+	"mode": "production.submission.checking",
 	"test_user_emails": [
 		"mbs@ee.ucla.edu"
 	],
@@ -16,8 +16,8 @@
 		"final_alt_task1_5.gv",
 		"M16 Components.circ"
 	],
-	"helper_module_url": "https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/helper_sequential.py",
-	"helper_module_task_url": "https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/final_alt_task1/helper_task.py",
+	"helper_module_url": "https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_alt_2023s/helper_sequential.py",
+	"helper_module_task_url": "https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_alt_2023s/final_alt_task1/helper_task.py",
 	"stats_gsheet": {
 		"name": "final_alt_task1_2023s_perfstats",
 		"worksheet": 0
@@ -29,7 +29,7 @@
 		},
 		{
 			"name":"final_alt_task1_tester.circ", 
-			"url":"https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_2023s/final_alt_task1/final_alt_task1_tester.circ"
+			"url":"https://raw.githubusercontent.com/msrivastava/ECEM16/master/2023%20Spring/autograders/final_alt_2023s/final_alt_task1/final_alt_task1_tester.circ"
 		}
 	],
 	"problem_specs": [
