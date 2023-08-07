@@ -47,56 +47,87 @@ def gsheetstats_func(p,state,total_errors,has_fatal_error):
 def stateupdate_func(state,t,sigrec):
     state['ticks'] += 1
     if sigrec['RST']['t@1']==t and sigrec['RST']['val']=='0' and sigrec['RST']['val@2']=='1' and sigrec['RST']['val@3']=='0':
+        # falling edge on RST
         state['resets_done'] +=1
         state['resets_done_details'].append(t)
+        state["jobs_completed_each_run"].append(0)
+        state["job_pending"] = 0
         state['opcount'] = 0
+        state['X1'] = None
+        state['Y1'] = None
+        state['X2'] = None
+        state['Y2'] = None
+        state['protocol_phase'] = 1
     if sigrec['RST']['t@1']==t and sigrec['RST']['val']=='1' and sigrec['RST']['val@2']=='0' and sigrec['RST']['val@3']=='1':
+        # rising edge on RST
         state['runs_done'] +=1
         state['runs_done_details'].append(t)
+        if len(state["t_arrivals"])>len(state["t_completions"]):
+            # reset happened while we were awaiting completion of a job
+            state["t_completions"].append(-t)
+            state["min_execution_times"].append(t-state["t_arrivals"][-1])
+            state["job_requests_unfinished"].append((state["job_requests"][-1],t))
+        state['protocol_phase'] = 0
     if t>0 and sigrec['RST']['val@2']=='1':
-        if rising_edge('GO1',t,sigrec): 
-            state["t_arrivals_1"].append(t)
-            state['opcount'] += 1
-            state['X1'] = sigrec['X1']['val']
-            state['Y1'] = sigrec['Y1']['val']
-        if rising_edge('GO2',t,sigrec): 
-            state["t_arrivals_2"].append(t)
-            state['opcount'] += 1
-            state['X2'] = sigrec['X2']['val']
-            state['Y2'] = sigrec['Y2']['val']
-        if state['opcount']==2 and (rising_edge('GO1',t,sigrec) or rising_edge('GO2',t,sigrec)):
+        if rising_edge('REQ',t,sigrec):
+            state['protocol_phase'] = 2
+            state["job_pending"] = 1
             state["t_arrivals"].append(t)
             state["jobs_arrived"] += 1
-        if rising_edge('DONE',t,sigrec):
-            state["t_completions"].append(t)
-            state["jobs_completed"] += 1
+            state['X1'] = sigrec['X1']['val']
+            state['Y1'] = sigrec['Y1']['val']
+            state['X2'] = sigrec['X2']['val']
+            state['Y2'] = sigrec['Y2']['val']
+            X1 = twos(signextend(state['X1'],4),4)
+            Y1 = twos(signextend(state['Y1'],4),4)
+            X2 = twos(signextend(state['X2'],4),4)
+            Y2 = twos(signextend(state['Y2'],4),4)
+            state["job_requests"].append((X1,Y1,X2,Y2,t))
+        if rising_edge('ACK',t,sigrec):
+            state['protocol_phase'] = 3
+            state['protocol_phase'] = "REQ=1;ACK=1"
+            if state["job_pending"] == 1:
+                state["t_completions"].append(t)
+                state["jobs_completed"] += 1
+                state["jobs_completed_each_run"][-1]+=1
+                state["job_requests_completed"].append((state["job_requests"][-1],t))
+                state["job_pending"] = 0
             if len(state["t_arrivals"])>0:
                 state["execution_times"].append(t-state["t_arrivals"][-1])
+                state["min_execution_times"].append(t-state["t_arrivals"][-1])
             else:
                 state["execution_times"].append(None)
-        if falling_edge('DONE',t,sigrec):
+        if falling_edge('REQ',t,sigrec):
+            state['protocol_phase'] = 4
             state['X1'] = None
             state['Y1'] = None
             state['X2'] = None
             state['Y2'] = None
-            state['opcount'] = 0
+        if falling_edge('ACK',t,sigrec):
+            state['protocol_phase'] = 1
     #print(f"state: {state}")
     return
 
 def check_protocol_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     errrec = state["errrec"]
     errtype = errtype if errtype!=None else "protocol"
-    if rising_edge('DONE',t,sigrec) and state['opcount']!=2:
-        # checking that DONE is asserted only after two operands are there
+    if rising_edge('ACK',t,sigrec) and state['protocol_phase']!=2:
+        # ACK should rise only when REQ=1
         errrec['total'] = errrec.get('total',0)+1
         errrec[errtype] = errrec.get(errtype,0)+1
-        errrec['protocol.opcount'] = errrec.get('protocol.opcount',0)+1
+        errrec[errtype+".ack_rise"] = errrec.get(errtype+".ack_rise",0)+1
         return False
-    elif falling_edge('DONE',t,sigrec) and sigrec['DONE']['t@2'] and t!=sigrec['DONE']['t@2']+1:
-        # checking that DONE is a high pulse of width 1
+    if falling_edge('ACK',t,sigrec) and state['protocol_phase']!=0 and state['protocol_phase']!=4:
+        # ACK should fall only when REQ=0 or when we are in reset
         errrec['total'] = errrec.get('total',0)+1
         errrec[errtype] = errrec.get(errtype,0)+1
-        errrec['protocol.donewidth'] = errrec.get('protocol.donewidth',0)+1
+        errrec[errtype+".ack_fall"] = errrec.get(errtype+".ack_fall",0)+1
+        return False
+    if sigrec['DIST']['t@1']==t and state['protocol_phase']==3:
+        # DIST should be stable when ACK=1 but REQ=0
+        errrec['total'] = errrec.get('total',0)+1
+        errrec[errtype] = errrec.get(errtype,0)+1
+        errrec[errtype+".dist_stability"] = errrec.get(errtype+".dist_stability",0)+1
         return False
     return True
 
@@ -114,7 +145,7 @@ def verify_distance_computation(t,X1,Y1,X2,Y2,DISTx8_COMPUTED):
 def check_output_value_func(tester,t,sigrec,state,msgs=None,params=None,errtype=None):
     errrec = state["errrec"]
     errtype = errtype if errtype!=None else "dist_value"
-    if rising_edge('DONE',t,sigrec):
+    if rising_edge('ACK',t,sigrec):
         state["total_dist"] += 1
         try:
             X1 = twos(signextend(state['X1'],4),4)
